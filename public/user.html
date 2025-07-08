@@ -49,97 +49,104 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  const socket = io();
-  let isSuspicious = false;
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      let isSuspicious = 0;
 
-  // Detect tab switch
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) isSuspicious = true;
-  });
-
-  document.getElementById("startBtn").onclick = async () => {
-    const emailInput = document.getElementById("email");
-    const userId = emailInput.value.trim();
-
-    if (!userId || !userId.includes("@")) {
-      alert("Please enter a valid email address.");
-      return;
-    }
-
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-
-      // Show exam
-      document.getElementById("startBtn").style.display = "none";
-      document.getElementById("email").style.display = "none";
-      document.querySelector("h2").style.display = "none";
-      document.getElementById("examContainer").style.display = "block";
-
-      socket.emit("user-join", userId);
-
-      // Recording setup
-      const video = document.createElement("video");
-      video.srcObject = stream;
-      video.play();
-
-      const canvas = document.createElement("canvas");
-      canvas.width = 426;
-      canvas.height = 240;
-      const ctx = canvas.getContext("2d");
-      const draw = () => ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      const interval = setInterval(draw, 1000 / 5);
-      const recordedStream = canvas.captureStream(5);
-      const recorder = new MediaRecorder(recordedStream);
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          e.data.arrayBuffer().then((buffer) => {
-            socket.emit("video-chunk", { userId, chunk: buffer });
-          });
-        }
-      };
-
-      recorder.start(1000);
-
-      // Timer setup
-      let remainingSeconds = 120;
-      const timerEl = document.getElementById("timer");
-
-      const updateTimer = () => {
-        const minutes = Math.floor(remainingSeconds / 60);
-        const seconds = remainingSeconds % 60;
-        timerEl.textContent = `Time Left: ${minutes}:${seconds.toString().padStart(2, "0")}`;
-      };
-
-      updateTimer();
-      const countdown = setInterval(() => {
-        remainingSeconds--;
-        updateTimer();
-        if (remainingSeconds <= 0) {
-          clearInterval(countdown);
-          recorder.stop();
-          clearInterval(interval);
-          socket.emit("user-suspicion", { userId, isSuspicious });
-          window.open('', '_self');
-          window.close();
-        }
-      }, 1000);
-
-      // Clean up on close
-      window.addEventListener("beforeunload", () => {
-        socket.emit("user-suspicion", { userId, isSuspicious });
-        recorder.stop();
-        clearInterval(interval);
+      // Detect tab switch
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) isSuspicious = 1;
       });
 
-    } catch (err) {
-      alert("Screen sharing is required to start the exam.");
-    }
-  };
-</script>
+      window.addEventListener("blur", () => {
+        isSuspicious = 2;
+      });
 
+      document.getElementById("startBtn").onclick = async () => {
+        const emailInput = document.getElementById("email");
+        const userId = emailInput.value.trim();
+
+        if (!userId || !userId.includes("@")) {
+          alert("Please enter a valid email address.");
+          return;
+        }
+
+        try {
+          const stream = await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+          });
+
+          // Show exam
+          document.getElementById("startBtn").style.display = "none";
+          document.getElementById("email").style.display = "none";
+          document.querySelector("h2").style.display = "none";
+          document.getElementById("examContainer").style.display = "block";
+
+          socket.emit("user-join", userId);
+
+          // Recording setup
+          const video = document.createElement("video");
+          video.srcObject = stream;
+          video.play();
+
+          const canvas = document.createElement("canvas");
+          canvas.width = 426;
+          canvas.height = 240;
+          const ctx = canvas.getContext("2d");
+          const draw = () =>
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          const interval = setInterval(draw, 1000 / 5);
+          const recordedStream = canvas.captureStream(5);
+          const recorder = new MediaRecorder(recordedStream);
+
+          recorder.ondataavailable = (e) => {
+            if (e.data.size > 0) {
+              e.data.arrayBuffer().then((buffer) => {
+                socket.emit("video-chunk", { userId, chunk: buffer });
+              });
+            }
+          };
+
+          recorder.start(1000);
+
+          // Timer setup
+          let remainingSeconds = 120;
+          const timerEl = document.getElementById("timer");
+
+          const updateTimer = () => {
+            const minutes = Math.floor(remainingSeconds / 60);
+            const seconds = remainingSeconds % 60;
+            timerEl.textContent = `Time Left: ${minutes}:${seconds
+              .toString()
+              .padStart(2, "0")}`;
+          };
+
+          updateTimer();
+          const countdown = setInterval(() => {
+            remainingSeconds--;
+            updateTimer();
+            if (remainingSeconds <= 0) {
+              clearInterval(countdown);
+              recorder.stop();
+              clearInterval(interval);
+              socket.emit("user-suspicion", { userId, isSuspicious });
+              window.open("", "_self");
+              window.close();
+            }
+          }, 1000);
+
+          // Clean up on close
+          window.addEventListener("beforeunload", () => {
+            socket.emit("user-suspicion", { userId, isSuspicious });
+            recorder.stop();
+            clearInterval(interval);
+          });
+        } catch (err) {
+          alert("Screen sharing is required to start the exam.");
+        }
+      };
+    </script>
   </body>
 </html>
