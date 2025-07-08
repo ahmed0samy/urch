@@ -79,16 +79,16 @@
           video.play();
 
           const canvas = document.createElement("canvas");
-          canvas.width = 854;
-          canvas.height = 480;
+          canvas.width = 426; // Standard width for 240p (16:9)
+          canvas.height = 240;
 
           const ctx = canvas.getContext("2d");
 
           const draw = () =>
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-          const interval = setInterval(draw, 1000 / 10);
-          const recordedStream = canvas.captureStream(10);
+          const interval = setInterval(draw, 1000 / 5);
+          const recordedStream = canvas.captureStream(5);
 
           const recorder = new MediaRecorder(recordedStream);
 
@@ -131,7 +131,7 @@
               clearInterval(countdown);
               recorder.stop();
               clearInterval(interval); // stop canvas drawing
-              alert("Time is up. The window will close now.");
+              // alert("Time is up. The window will close now.");
               window.open("", "_self", ""); // Fix for Chrome blocking window.close()
               window.close(); // Try to close the tab
             }
