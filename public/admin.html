@@ -1,44 +1,51 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Admin Panel</title>
-</head>
-<body>
-  <h2>Live Users</h2>
-  <ul id="users"></ul>
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-    socket.emit("admin-join");
+  <head>
+    <title>Admin Panel</title>
+  </head>
+  <body>
+    <h2>Live Users</h2>
+    <ul id="users"></ul>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      socket.emit("admin-join");
 
-    const usersList = document.getElementById("users");
-    const chunks = {};
+      const usersList = document.getElementById("users");
+      const chunks = {};
 
-    function downloadWebM(userId) {
-      const blob = new Blob(chunks[userId], { type: 'video/webm' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `${userId}.webm`;
-      a.click();
-    }
+      function downloadWebM(userId) {
+        const blob = new Blob(chunks[userId], { type: "video/webm" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `${userId}.webm`;
+        a.click();
+      }
 
-    socket.on("active-users", (users) => {
-      usersList.innerHTML = "";
-      users.forEach((id) => {
-        const li = document.createElement("li");
-        li.textContent = id;
-        usersList.appendChild(li);
+      socket.on("active-users", (users) => {
+        usersList.innerHTML = "";
+        users.forEach((id) => {
+          const li = document.createElement("li");
+          li.textContent = id;
+          usersList.appendChild(li);
+        });
       });
-    });
 
-    socket.on("video-chunk", ({ userId, chunk }) => {
-      if (!chunks[userId]) chunks[userId] = [];
-      chunks[userId].push(new Uint8Array(chunk));
-    });
+      socket.on("video-chunk", ({ userId, chunk }) => {
+        if (!chunks[userId]) chunks[userId] = [];
+        chunks[userId].push(new Uint8Array(chunk));
+      });
+      
+      socket.on("user-disconnected", (userId) => {
+        if (chunks[userId]) {
+          downloadWebM(userId);
+          delete chunks[userId]; // cleanup
+        }
+      });
 
-    window.addEventListener("beforeunload", () => {
-      for (const userId in chunks) downloadWebM(userId);
-    });
-  </script>
-</body>
+      window.addEventListener("beforeunload", () => {
+        for (const userId in chunks) downloadWebM(userId);
+      });
+    </script>
+  </body>
 </html>

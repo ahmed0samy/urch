@@ -30,6 +30,9 @@ io.on("connection", (socket) => {
     for (const [userId, id] of connectedUsers.entries()) {
       if (id === socket.id) {
         connectedUsers.delete(userId);
+
+        // 🔔 Notify admin to finalize recording
+        io.to("admin-room").emit("user-disconnected", userId);
         break;
       }
     }
