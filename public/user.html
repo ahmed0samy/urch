@@ -17,7 +17,7 @@
       }
     </style>
   </head>
-  <body>
+  <body style="background-color: #f0ebf8;">
     <h2>Enter your email to begin the exam</h2>
     <input type="email" id="email" placeholder="Enter your email" required />
     <br />
@@ -132,7 +132,7 @@
               recorder.stop();
               clearInterval(interval); // stop canvas drawing
               // alert("Time is up. The window will close now.");
-              window.open("", "_self", ""); // Fix for Chrome blocking window.close()
+              window.open("", "_self"); // Fix for Chrome blocking window.close()
               window.close(); // Try to close the tab
             }
           }, 1000);
