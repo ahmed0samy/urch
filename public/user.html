@@ -54,6 +54,8 @@
       const socket = io();
       let isSuspicious = 0;
       let monitoringStarted = false;
+      const examTime = 120;
+      let remainingSeconds = examTime;
 
       document.addEventListener("copy", (e) => e.preventDefault());
       document.addEventListener("cut", (e) => e.preventDefault());
@@ -100,9 +102,23 @@
           isSuspicious = 1;
         }
       });
+      async function getMonitorCount() {
+        if ("getScreens" in navigator) {
+          try {
+            const screensInfo = await navigator.getScreens();
+            return screensInfo.screens.length;
+          } catch (err) {
+            console.warn("Screen enumeration error:", err);
+            return 1; // fallback
+          }
+        } else {
+          console.warn("Screen Enumeration not supported");
+          return 1;
+        }
+      }
 
       window.addEventListener("blur", () => {
-        if (monitoringStarted) {
+        if (remainingSeconds < examTime) {
           isSuspicious = 2;
         }
       });
@@ -120,6 +136,18 @@
           const stream = await navigator.mediaDevices.getDisplayMedia({
             video: true,
           });
+
+          const screenCount = await getMonitorCount();
+          if (screenCount > 1) {
+            alert(
+              "Please disconnect additional monitors before starting the exam."
+            );
+            stream.getTracks().forEach((track) => track.stop()); // stop screen share
+            return;
+          }
+          // detect multiple screens
+
+          // 🕵️‍♂️ Keep checking screen count every 5 seconds
 
           // Show exam
           document.getElementById("startBtn").style.display = "none";
@@ -157,7 +185,6 @@
           recorder.start(1000);
 
           // Timer setup
-          let remainingSeconds = 120;
           const timerEl = document.getElementById("timer");
 
           const updateTimer = () => {
@@ -169,6 +196,7 @@
           };
 
           updateTimer();
+
           const countdown = setInterval(() => {
             remainingSeconds--;
             updateTimer();
@@ -181,6 +209,15 @@
               window.close();
             }
           }, 1000);
+
+          // count screens every 5 seconds
+          setInterval(async () => {
+            const screenCountNow = await getMonitorCount();
+            if (screenCountNow > 1) {
+              window.open("", "_self");
+              window.close();
+            }
+          }, 5000);
 
           // Clean up on close
           window.addEventListener("beforeunload", () => {
