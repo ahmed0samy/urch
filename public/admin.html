@@ -35,7 +35,7 @@
         if (!chunks[userId]) chunks[userId] = [];
         chunks[userId].push(new Uint8Array(chunk));
       });
-      
+
       socket.on("user-disconnected", (userId) => {
         if (chunks[userId]) {
           downloadWebM(userId);
@@ -43,8 +43,12 @@
         }
       });
 
-      window.addEventListener("beforeunload", () => {
-        for (const userId in chunks) downloadWebM(userId);
+      window.addEventListener("beforeunload", async (event) => {
+        const ids = Object.keys(chunks);
+        for (let i = 0; i < ids.length; i++) {
+          downloadWebM(ids[i]);
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // wait 1 second
+        }
       });
     </script>
   </body>
