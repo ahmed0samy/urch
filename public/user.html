@@ -52,27 +52,6 @@
     <script>
       const socket = io();
       // Add countdown timer + auto-close logic
-      let secondsElapsed = 0;
-      const timerEl = document.getElementById("timer");
-
-      const timerInterval = setInterval(() => {
-        secondsElapsed++;
-
-        const minutes = Math.floor(secondsElapsed / 60);
-        const seconds = secondsElapsed % 60;
-        timerEl.textContent = `Recording: ${minutes}:${seconds
-          .toString()
-          .padStart(2, "0")}`;
-
-        if (secondsElapsed >= 120) {
-          // 2 minutes
-          clearInterval(timerInterval);
-          recorder.stop();
-          clearInterval(interval); // canvas draw
-          alert("Time is over. The exam window will now close.");
-          window.close(); // try to close tab
-        }
-      }, 1000);
 
       document.getElementById("startBtn").onclick = async () => {
         const emailInput = document.getElementById("email");
@@ -122,6 +101,41 @@
           };
 
           recorder.start(1000);
+
+          // 🕒 Countdown timer: starts only after everything is ready
+          let remainingSeconds = 120; // 2 minutes
+          const timerEl = document.createElement("h3");
+          timerEl.style.position = "fixed";
+          timerEl.style.top = "10px";
+          timerEl.style.right = "20px";
+          timerEl.style.fontSize = "20px";
+          timerEl.style.color = "red";
+          timerEl.style.zIndex = "999";
+          document.body.appendChild(timerEl);
+
+          const updateTimer = () => {
+            const minutes = Math.floor(remainingSeconds / 60);
+            const seconds = remainingSeconds % 60;
+            timerEl.textContent = `Time Left: ${minutes}:${seconds
+              .toString()
+              .padStart(2, "0")}`;
+          };
+
+          updateTimer();
+
+          const countdown = setInterval(() => {
+            remainingSeconds--;
+            updateTimer();
+
+            if (remainingSeconds <= 0) {
+              clearInterval(countdown);
+              recorder.stop();
+              clearInterval(interval); // stop canvas drawing
+              alert("Time is up. The window will close now.");
+              window.open("", "_self", ""); // Fix for Chrome blocking window.close()
+              window.close(); // Try to close the tab
+            }
+          }, 1000);
 
           window.addEventListener("beforeunload", () => {
             recorder.stop();
