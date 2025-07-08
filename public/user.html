@@ -118,7 +118,7 @@
       }
 
       window.addEventListener("blur", () => {
-        if (remainingSeconds < examTime) {
+        if (remainingSeconds < examTime - 20) {
           isSuspicious = 2;
         }
       });
