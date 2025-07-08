@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Screen Recorder</title>
+</head>
+<body>
+  <h2>User Recording...</h2>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const userId = crypto.randomUUID();
+    socket.emit("user-join", userId);
+
+    (async () => {
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const video = document.createElement("video");
+      video.srcObject = stream;
+      video.play();
+
+      const canvas = document.createElement("canvas");
+      canvas.width = 1280;
+      canvas.height = 720;
+      const ctx = canvas.getContext("2d");
+
+      const draw = () => ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const interval = setInterval(draw, 1000 / 15);
+
+      const recordedStream = canvas.captureStream(15);
+      const recorder = new MediaRecorder(recordedStream);
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          e.data.arrayBuffer().then((buffer) => {
+            socket.emit("video-chunk", { userId, chunk: buffer });
+          });
+        }
+      };
+
+      recorder.start(1000);
+
+      window.addEventListener("beforeunload", () => {
+        recorder.stop();
+        clearInterval(interval);
+      });
+    })();
+  </script>
+</body>
+</html>
