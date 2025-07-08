@@ -14,10 +14,11 @@
       const usersList = document.getElementById("users");
       const chunks = {};
       const suspicionMap = {};
-
+      const susConditions = ["", "sus", "xsus", "xxsus"]
       function downloadWebM(userId) {
         const isSuspicious = suspicionMap[userId];
-        const filename =  `${userId}_${isSuspicious == 0? "": isSuspicious == 1? "sus": "xsus"}.webm`;
+
+        const filename =  `${userId}_${susConditions[isSuspicious]}.webm`;
         const blob = new Blob(chunks[userId], { type: "video/webm" });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
