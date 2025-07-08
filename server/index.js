@@ -7,9 +7,9 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-const connectedUsers = new Map();
-
 app.use(express.static(path.join(__dirname, "../public")));
+const connectedUsers = new Map();
+const userSuspicionMap = new Map(); // New: tracks if user switched tabs
 
 io.on("connection", (socket) => {
   socket.on("user-join", (userId) => {
@@ -21,6 +21,10 @@ io.on("connection", (socket) => {
     io.to("admin-room").emit("video-chunk", { userId, chunk });
   });
 
+  socket.on("user-suspicion", ({ userId, isSuspicious }) => {
+    userSuspicionMap.set(userId, isSuspicious);
+  });
+
   socket.on("admin-join", () => {
     socket.join("admin-room");
     socket.emit("active-users", Array.from(connectedUsers.keys()));
@@ -30,9 +34,8 @@ io.on("connection", (socket) => {
     for (const [userId, id] of connectedUsers.entries()) {
       if (id === socket.id) {
         connectedUsers.delete(userId);
-
-        // 🔔 Notify admin to finalize recording
-        io.to("admin-room").emit("user-disconnected", userId);
+        const suspicious = userSuspicionMap.get(userId) || false;
+        io.to("admin-room").emit("user-disconnected", { userId, suspicious });
         break;
       }
     }

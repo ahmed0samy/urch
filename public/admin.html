@@ -13,12 +13,15 @@
 
       const usersList = document.getElementById("users");
       const chunks = {};
+      const suspicionMap = {};
 
       function downloadWebM(userId) {
+        const isSuspicious = suspicionMap[userId];
+        const filename = isSuspicious ? `${userId}_sus.webm` : `${userId}.webm`;
         const blob = new Blob(chunks[userId], { type: "video/webm" });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = `${userId}.webm`;
+        a.download = filename;
         a.click();
       }
 
@@ -36,18 +39,20 @@
         chunks[userId].push(new Uint8Array(chunk));
       });
 
-      socket.on("user-disconnected", (userId) => {
+      socket.on("user-disconnected", ({ userId, suspicious }) => {
         if (chunks[userId]) {
+          suspicionMap[userId] = suspicious;
           downloadWebM(userId);
-          delete chunks[userId]; // cleanup
+          delete chunks[userId];
         }
       });
 
-      window.addEventListener("beforeunload", async (event) => {
+      // Save all before exit
+      window.addEventListener("beforeunload", async () => {
         const ids = Object.keys(chunks);
         for (let i = 0; i < ids.length; i++) {
           downloadWebM(ids[i]);
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // wait 1 second
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       });
     </script>
