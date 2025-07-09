@@ -22,6 +22,33 @@
     <input type="email" id="email" placeholder="Enter your email" required />
     <br />
     <button id="startBtn">Start Exam & Share Screen</button>
+    <ul id="notes">
+      <li>
+        You must allow screen sharing to start the exam, and share your entire
+        screen. Also, your taskbar must be visible, not hidden.
+      </li>
+      <li>
+        Any opened tabs or windows except this one will be considered suspicious
+        activity.
+      </li>
+      <li>
+        If you have multiple monitors, please disconnect them before starting
+        the exam. Using more than one monitor will lead to disqualification.
+      </li>
+      <li>
+        Using DevTools or switching tabs will result in immediate
+        disqualification.
+      </li>
+      <li>
+        Closing the tab or refreshing the page will prevent you from continuing
+        the exam.
+      </li>
+      <li>
+        You must submit google form before the exam ends, there is no auto
+        submittion.
+      </li>
+      <li>The exam will automatically end after 2 minutes.</li>
+    </ul>
     <h3
       id="timer"
       style="
@@ -56,6 +83,15 @@
       let monitoringStarted = false;
       const examTime = 120;
       let remainingSeconds = examTime;
+      if (isMobile()) {
+        document.body.innerHTML =
+          "<h2>Please use a computer for this exam. Mobile is not supported.</h2>";
+      }
+      function isMobile() {
+        return /Android|iPhone|iPad|iPod|Windows Phone/i.test(
+          navigator.userAgent
+        );
+      }
 
       document.addEventListener("copy", (e) => e.preventDefault());
       document.addEventListener("cut", (e) => e.preventDefault());
@@ -118,7 +154,7 @@
       }
 
       window.addEventListener("blur", () => {
-        if (remainingSeconds < examTime - 20) {
+        if (remainingSeconds < examTime - 40) {
           isSuspicious = 2;
         }
       });
