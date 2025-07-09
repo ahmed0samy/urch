@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Start Exam</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding-top: 100px;
+      }
+      input,
+      button {
+        font-size: 1.2em;
+        padding: 10px;
+        margin: 10px;
+        width: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Welcome to URch</h2>
+    <button onclick="startExam()">Go to exam page</button>
+
+    <script>
+      function startExam() {
+        const examWindow = window.open(`user.html`, "_blank");
+
+        // ✅ This window will now be allowed to close itself using window.close()
+      }
+    </script>
+  </body>
+</html>

@@ -34,13 +34,16 @@ io.on("connection", (socket) => {
     for (const [userId, id] of connectedUsers.entries()) {
       if (id === socket.id) {
         connectedUsers.delete(userId);
-        const suspicious = userSuspicionMap.get(userId) || false;
+        const suspicious = userSuspicionMap.get(userId) || 0;
         io.to("admin-room").emit("user-disconnected", { userId, suspicious });
         break;
       }
     }
     io.emit("active-users", Array.from(connectedUsers.keys()));
   });
+});
+app.get("/ping", (req, res) => {
+  res.send("pong");
 });
 
 const PORT = process.env.PORT || 3000;

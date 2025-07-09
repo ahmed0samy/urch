@@ -2,22 +2,10 @@
 <html>
   <head>
     <title>URch</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        text-align: center;
-        padding: 2em;
-      }
-      input,
-      button {
-        font-size: 1em;
-        padding: 0.5em;
-        margin: 1em;
-        width: 300px;
-      }
-    </style>
+    <link rel="stylesheet" href="user.css" />
+    <style></style>
   </head>
-  <body style="background-color: #f0ebf8">
+  <body>
     <h2>Enter your email to begin the exam</h2>
     <input type="email" id="email" placeholder="Enter your email" required />
     <br />
@@ -92,6 +80,22 @@
         );
       }
 
+      function warn() {
+        document.body.innerHTML += `<div class="warnfulpage">      <video id="myVideo" autoplay muted>
+    <source src="./cheater.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+ <h1> Bye! </h1> <span> We warned you, isn't that? </span> </div>`;
+        ("<h2>Warning: This exam is not designed for mobile devices. Please switch to a computer for the best experience.</h2>");
+
+        // const video = document.getElementById("myVideo");
+        // video.style.display = "block"; // Show video
+        // video.controls = false; // Hide controls if needed
+        // vide.loop = false;
+        // video.play().catch((err) => {
+        //   console.warn("Play failed:", err);
+        // });
+      }
       document.addEventListener("copy", (e) => e.preventDefault());
       document.addEventListener("cut", (e) => e.preventDefault());
       document.addEventListener("paste", (e) => e.preventDefault());
@@ -137,19 +141,10 @@
           isSuspicious = 1;
         }
       });
+
       async function getMonitorCount() {
-        if ("getScreens" in navigator) {
-          try {
-            const screensInfo = await navigator.getScreens();
-            return screensInfo.screens.length;
-          } catch (err) {
-            console.warn("Screen enumeration error:", err);
-            return 1; // fallback
-          }
-        } else {
-          console.warn("Screen Enumeration not supported");
-          return 1;
-        }
+        const screensArr = await window.getScreenDetails();
+        return screensArr.screens.length;
       }
 
       window.addEventListener("blur", () => {
@@ -199,8 +194,8 @@
           video.play();
 
           const canvas = document.createElement("canvas");
-          canvas.width = 426;
-          canvas.height = 240;
+          canvas.width = 640; // ✅ 360p width
+          canvas.height = 360; // ✅ 360p height
           const ctx = canvas.getContext("2d");
           const draw = () =>
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -246,11 +241,16 @@
           }, 1000);
 
           // count screens every 5 seconds
-          setInterval(async () => {
+          const pInterval = setInterval(async () => {
             const screenCountNow = await getMonitorCount();
             if (screenCountNow > 1) {
-              window.open("", "_self");
-              window.close();
+              warn(); // e.g., alert("Multiple screens detected!")
+              clearInterval(pInterval); // stop checking further
+
+              // Wait 50 seconds, then close window once
+              setTimeout(() => {
+                window.close();
+              }, 10000);
             }
           }, 5000);
 

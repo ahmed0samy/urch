@@ -17,7 +17,7 @@
       const susConditions = ["", "sus", "xsus", "xxsus"]
       function downloadWebM(userId) {
         const isSuspicious = suspicionMap[userId];
-
+        console.log("is sus?: ",isSuspicious)
         const filename =  `${userId}_${susConditions[parseInt(isSuspicious)]}.webm`;
         const blob = new Blob(chunks[userId], { type: "video/webm" });
         const a = document.createElement("a");
