@@ -241,7 +241,7 @@ async function startExam() {
       video.play();
 
       const canvas = document.createElement("canvas");
-      const dim = 250;
+      const dim = 500;
       canvas.width = (dim * 16) / 9;
       canvas.height = dim;
       const ctx = canvas.getContext("2d");
@@ -252,7 +252,7 @@ async function startExam() {
       const recordedStream = canvas.captureStream(1);
       const recorder = new MediaRecorder(recordedStream, {
         mimeType: "video/webm;codecs=vp8",
-        videoBitsPerSecond: 5000000,
+        videoBitsPerSecond: 10_000_000,
       });
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
