@@ -1,0 +1,313 @@
+@import url("https://fonts.googleapis.com/css2?family=Fruktur:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Winky Rough", sans-serif;
+  color: white;
+  transition: all 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+body {
+  font-family: sans-serif;
+  text-align: center;
+  /* padding-top: 100px; */
+  background: linear-gradient(45deg, #69208e, #f71746);
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  overflow: hidden;
+}
+.starting * {
+  color: transparent;
+  transition: color 4s ease-in-out;
+}
+
+.disappear * {
+  opacity: 0;
+}
+/* header {
+  height: 80px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  padding: 20px;
+  left: 0;
+  display: flex;
+  justify-content: start;
+  z-index: 2;
+} */
+img {
+  border-radius: 100%;
+  border: 2px solid white;
+  position: fixed;
+  z-index: 2;
+  width: 130px;
+  height: 130px;
+  transform: translate(0, 0);
+  top: 20px;
+  left: 20px;
+  transition: all 3s ease-in-out;
+  opacity: 1 !important;
+}
+
+.center {
+  width: 150px;
+  transition: all 3s 1 ease-in-out !important;
+  height: 150px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-color: transparent;
+  opacity: 1;
+}
+
+div {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  text-align: center;
+}
+h2,
+p {
+  font-optical-sizing: auto;
+}
+h2 {
+  font-size: 30px;
+  transition: all 0.3s ease-in-out;
+}
+h1 {
+  font-family: "Fruktur", system-ui;
+  font-weight: 400;
+  font-size: 50px;
+  margin: 10px;
+  transition: all 0.3s ease-in-out;
+  transition-delay: 1s;
+}
+
+.scale {
+  font-size: 52px;
+  transition: all 1s ease-in-out;
+  text-shadow: 0 0 5px transparent, 0 0 10px transparent, 0 0 20px transparent;
+
+  animation: glow 1s ease-in-out alternate-reverse;
+}
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px transparent, 0 0 10px transparent, 0 0 20px transparent;
+  }
+  to {
+    text-shadow: 0 0 5px white, 0 0 10px white, 0 0 20px white;
+  }
+}
+
+p {
+  font-size: 20px;
+  align-self: flex-end;
+  transition: all 0.3s ease-in-out 1.5s;
+}
+
+button.show {
+  opacity: 1 !important;
+  position: relative;
+  bottom: 0;
+  /* transform: scale(1.03); */
+  animation: glowwithscale 1s ease-in-out forwards;
+}
+
+@keyframes glowwithscale {
+  0% {
+    text-shadow: 0 0 5px transparent, 0 0 10px transparent, 0 0 20px transparent;
+    transform: scale(0.93);
+  }
+  50% {
+    text-shadow: 0 0 5px white, 0 0 10px white, 0 0 20px white;
+  }
+  75% {
+    transform: scale(0.93);
+  }
+  100% {
+    text-shadow: 0 0 5px transparent, 0 0 10px transparent, 0 0 20px transparent;
+    transform: scale(1);
+  }
+}
+
+button {
+  font-size: 1.2em;
+  padding: 10px;
+  margin-top: 50px;
+  background-color: transparent;
+  outline: none;
+  border: 2px solid white;
+  border-style: outset;
+  width: 300px;
+  border-radius: 120px;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0 !important;
+  position: fixed;
+  bottom: -100px;
+  transform: scale(1);
+}
+
+button:hover, button.hovered {
+  transform: scale(1.06);
+  color: white;
+
+}
+
+/* From Uiverse.io by mrhyddenn */
+button {
+  position: relative;
+  padding: 20px;
+  border-radius: 7px;
+  /* border: 1px solid rgb(61, 106, 255); */
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 2px;
+  background: transparent;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+
+button:hover, button.hovered {
+  /* background: linear-gradient(45deg, #69208e, #f71746); */
+
+  box-shadow: 0 0 40px 5px rgba(255, 255, 255, 0.555);
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+
+  border-color: white;
+  color: white;
+}
+
+button:hover::after, button.hovered::after {
+  -webkit-animation: sh02 0.5s 0s linear;
+  -moz-animation: sh02 0.5s 0s linear;
+  animation: sh02 0.5s 0s linear;
+}
+
+button::after {
+  content: "";
+  display: block;
+  width: 0px;
+  height: 86%;
+  position: absolute;
+  top: 7%;
+  left: 0%;
+  opacity: 0;
+  background: #fff;
+  box-shadow: 0 0 50px 30px #fff;
+  -webkit-transform: skewX(-20deg);
+  -moz-transform: skewX(-20deg);
+  -ms-transform: skewX(-20deg);
+  -o-transform: skewX(-20deg);
+  transform: skewX(-20deg);
+}
+
+@keyframes sh02 {
+  from {
+    opacity: 0;
+    left: 0%;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    left: 100%;
+  }
+}
+
+button:active {
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: box-shadow 0.2s ease-in;
+  -moz-transition: box-shadow 0.2s ease-in;
+  transition: box-shadow 0.2s ease-in;
+}
+
+.white {
+  position: fixed;
+  bottom: -10px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  transform: translateX(-50%);
+  transition: all 1s ease-in-out;
+  background-color: #ffffff;
+  z-index: 20;
+}
+
+.starting .white {
+  animation: starting 3s 1 ease-in-out forwards;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+}
+
+@keyframes starting {
+  0% {
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    top: 101%;
+    left: 50%;
+  }
+  50% {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 100%;
+  }
+  75% {
+    /* border-radius: 100%; */
+  }
+
+  100% {
+    width: calc(141.42 * 1vw);
+    height: calc(141.42 * 1vw);
+    /* border-radius: 0; */
+  }
+}
+
+.black {
+  background-color: #131525;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  position: fixed;
+  top: 0;
+  right: 0;
+  opacity: 1;
+}
+.black.hide {
+  animation: blackfade 3s ease-in-out forwards;
+}
+@keyframes blackfade {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+

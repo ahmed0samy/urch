@@ -1,30 +1,68 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Start Exam</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        text-align: center;
-        padding-top: 100px;
-      }
-      input,
-      button {
-        font-size: 1.2em;
-        padding: 10px;
-        margin: 10px;
-        width: 300px;
-      }
-    </style>
+    <title>The Ultimate Renowned Chemist</title>
+    <link rel="stylesheet" href="index.css" />
   </head>
-  <body>
-    <h2>Welcome to URch</h2>
-    <button onclick="startExam()">Go to exam page</button>
-
+  <body class="disappear">
+    <div class="white"></div>
+    <div class="black"></div>
+    <img class="center" src="/logo.png" alt="" />
+    <!-- <header>
+    </header> -->
+    <div>
+      <h2>Welcome at</h2>
+      <h1>The Ultimate Renowned Chemist</h1>
+      <p>Chemistry competition.</p>
+    </div>
+    <button>Let's go 🔥</button>
+    <script src="/user.js"></script>
     <script>
-      function startExam() {
-        const examWindow = window.open(`user.html`, "_blank");
+      const btn = document.querySelector("button");
+      const black = document.querySelector(".black");
+      const h1 = document.querySelector("h1")
+      let disabled = false;
+      const img = document.querySelector("img");
+      setTimeout(() => {
+        document.body.classList.remove("disappear");
+      }, 4000);
+      setTimeout(() => {
+        btn.classList.add("show");
+      }, 7000);
+      setTimeout(() => {
+        btn.classList.add("hovered")
+      }, 8000);
+      setTimeout(() => {
+        btn.classList.remove("hovered")
+      }, 9000);
 
+      setTimeout(() => {
+        black.remove();
+        h1.classList.add("scale")
+      }, 5000);
+      setTimeout(() => {
+        img.classList.remove("center");
+        black.classList.add("hide");
+      }, 1000);
+      btn.addEventListener("click", () => {
+        if (!disabled) {
+          startExam();
+        }
+        disabled = true;
+      });
+      function startExam() {
+        document.body.classList.add("starting");
+        setTimeout(() => {
+          const token = crypto.randomUUID();
+          sessionStorage.setItem("exam-token", token); // store in session
+
+          const examWindow = window.open(`user.html?user=${token}`, "_blank");
+        }, 4000);
+
+        setTimeout(() => {
+          document.body.classList.remove("starting");
+          disabled = false;
+        }, 6000);
         // ✅ This window will now be allowed to close itself using window.close()
       }
     </script>
