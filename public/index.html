@@ -3,8 +3,8 @@
   <head>
     <title>The Ultimate Renowned Chemist</title>
     <link rel="stylesheet" href="index.css" />
-    <link rel="icon" type="image/x-icon" href="/urch_logo_trans.ico">
-
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" href="/urch_logo_trans.ico" />
   </head>
   <body class="disappear">
     <div class="white"></div>
@@ -22,7 +22,7 @@
     <script>
       const btn = document.querySelector("button");
       const black = document.querySelector(".black");
-      const h1 = document.querySelector("h1")
+      const h1 = document.querySelector("h1");
       let disabled = false;
       const img = document.querySelector("img");
       setTimeout(() => {
@@ -32,15 +32,15 @@
         btn.classList.add("show");
       }, 7000);
       setTimeout(() => {
-        btn.classList.add("hovered")
+        btn.classList.add("hovered");
       }, 8000);
       setTimeout(() => {
-        btn.classList.remove("hovered")
+        btn.classList.remove("hovered");
       }, 9000);
 
       setTimeout(() => {
         black.remove();
-        h1.classList.add("scale")
+        h1.classList.add("scale");
       }, 5000);
       setTimeout(() => {
         img.classList.remove("center");

@@ -144,20 +144,34 @@ async function startExam() {
   const userId = emailInput.value.trim();
 
   emailInput.addEventListener("input", () => {
-    startBtn.classList.remove("disabled")
-  })
+    startBtn.classList.remove("disabled");
+  });
 
   if (!userId.includes("@")) {
     warnError("This email is invalid!");
     // alert("Please enter a valid email address.");
     return;
   }
+
+  let camStream;
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({ video: true });
+  } catch (err) {
+    alert("❌ Camera access is required to continue the exam.");
+    warnError("You must allow camera access");
+    return; // stop startExam()
+  }
   // First check with the server if the user is allowed to start
   socket.emit("exam-start", userId, async (response) => {
     if (!response.allowed) {
       switch (response.reason) {
         case "not_registered":
-          warnError("This email isn't registered in regestration form!", 6000, true, true);
+          warnError(
+            "This email isn't registered in regestration form!",
+            6000,
+            true,
+            true
+          );
           break;
         case "already_attended":
           warnError("You have already attended the exam!", 6000, true, true);
@@ -182,12 +196,7 @@ async function startExam() {
       if (screenCount > 1) {
         loading = false;
         startBtn.classList.remove("disabled");
-          warnError(
-            "Please disconnect additional monitors.",
-            2000,
-            false,
-            true
-          );
+        warnError("Please disconnect additional monitors.", 2000, false, true);
         stream.getTracks().forEach((t) => t.stop());
         return;
       }
@@ -209,6 +218,7 @@ async function startExam() {
         document.body.innerHTML = `
   <img class="logo" src="/logo.png" alt="" />
   <h3 id="timer"></h3>
+  <video id="cameraPreview" autoplay muted playsinline></video>
  <div class="countdown-wrapper">
   <div class="time-text" id="time">Time left: 10:00</div>
   <div class="bar-container">
@@ -224,7 +234,8 @@ async function startExam() {
     height="100%"
   ></iframe>
 `;
-
+        const camPreview = document.getElementById("cameraPreview");
+        camPreview.srcObject = camStream;
         // timerEl = document.getElementById("timer");
         timeDisplay = document.getElementById("time");
         bar = document.getElementById("bar");
@@ -241,7 +252,7 @@ async function startExam() {
       video.play();
 
       const canvas = document.createElement("canvas");
-      const dim = 500;
+      const dim = 600;
       canvas.width = (dim * 16) / 9;
       canvas.height = dim;
       const ctx = canvas.getContext("2d");

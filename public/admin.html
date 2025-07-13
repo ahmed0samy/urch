@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>Admin Panel</title>
-    <link rel="icon" type="image/x-icon" href="/urch_logo_trans.ico">
-
+    <link rel="icon" type="image/svg+xml" href="/urch_logo_trans.svg" />
+    <link rel="alternate icon" href="/urch_logo_trans.ico" />
   </head>
   <body>
     <h2>Live Users</h2>
@@ -16,11 +16,13 @@
       const usersList = document.getElementById("users");
       const chunks = {};
       const suspicionMap = {};
-      const susConditions = ["", "sus", "xsus", "xxsus"]
+      const susConditions = ["", "sus", "xsus", "xxsus"];
       function downloadWebM(userId) {
         const isSuspicious = suspicionMap[userId];
-        console.log("is sus?: ",isSuspicious)
-        const filename =  `${userId}_${susConditions[parseInt(isSuspicious)]}.webm`;
+        console.log("is sus?: ", isSuspicious);
+        const filename = `${userId}_${
+          susConditions[parseInt(isSuspicious)]
+        }.webm`;
         const blob = new Blob(chunks[userId], { type: "video/webm" });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);

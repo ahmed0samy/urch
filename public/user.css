@@ -419,6 +419,7 @@ img {
   bottom: 0;
   left: 0;
   width: 100%;
+  height: 60px;
   background-color: #222;
   display: flex;
   align-items: center;
@@ -448,3 +449,17 @@ img {
 .time-text {
   color: white;
 }
+
+
+ #cameraPreview {
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    width: 400px;
+    height: 225px;
+    border: 2px solid white;
+    border-radius: 10px;
+    object-fit: cover;
+    z-index: 9999;
+    background: black;
+  }
