@@ -82,7 +82,7 @@ setInterval(() => {
     window.outerWidth - window.innerWidth > threshold ||
     window.outerHeight - window.innerHeight > threshold;
   if (devtoolsOpen) {
-    isSuspicious = 3;
+    isSuspicious =  Math.max(3, isSuspicious);
     console.warn("DevTools detected");
   }
 }, 1000);
@@ -90,13 +90,13 @@ setInterval(() => {
 // Detect tab switch
 document.addEventListener("visibilitychange", () => {
   if (monitoringStarted && document.hidden) {
-    isSuspicious = 1;
+    isSuspicious = Math.max(1, isSuspicious);
   }
 });
 
 window.addEventListener("blur", () => {
   if (remainingSeconds < examTime - 10) {
-    isSuspicious = 2;
+    isSuspicious = Math.max(2, isSuspicious);
   }
 });
 
