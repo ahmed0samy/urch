@@ -174,7 +174,7 @@ async function startExam() {
           );
           break;
         case "already_attended":
-          warnError("You have already attended the exam!", 6000, true, true);
+          warnError("You have already attended the exam!", 6000, false, true);
           break;
         default:
           warnError(
@@ -214,18 +214,60 @@ async function startExam() {
         document.body.classList.add("dark");
         document.body.classList.remove("reddish");
         document.body.classList.add("scroll");
+        document.body.classList.remove("unscroll");
 
         document.body.innerHTML = `
   <img class="logo" src="/logo.png" alt="" />
+  <h1>List of all formulas and data you will need</h1>
+    <div class="grid-table">
+    <div class="header">Element</div>
+    <div class="header">Electrode Reaction</div>
+    <div class="header">E° (V)</div>
+
+    <div>Li</div><div>Li<sup>+</sup> + e<sup>−</sup> → Li</div><div>-3.045</div>
+    <div>K</div><div>K<sup>+</sup> + e<sup>−</sup> → K</div><div>-2.925</div>
+    <div>Cs</div><div>Cs<sup>+</sup> + e<sup>−</sup> → Cs</div><div>-2.923</div>
+    <div>Ba</div><div>Ba<sup>2+</sup> + 2e<sup>−</sup> → Ba</div><div>-2.906</div>
+    <div>Ca</div><div>Ca<sup>2+</sup> + 2e<sup>−</sup> → Ca</div><div>-2.866</div>
+    <div>Na</div><div>Na<sup>+</sup> + e<sup>−</sup> → Na</div><div>-2.714</div>
+    <div>Mg</div><div>Mg<sup>2+</sup> + 2e<sup>−</sup> → Mg</div><div>-2.363</div>
+    <div>Al</div><div>Al<sup>3+</sup> + 3e<sup>−</sup> → Al</div><div>-1.662</div>
+    <div>H<sub>2</sub>O</div><div>H<sub>2</sub>O + 2e<sup>−</sup> → H<sub>2</sub> + 2OH<sup>−</sup></div><div>-0.829</div>
+    <div>Zn</div><div>Zn<sup>2+</sup> + 2e<sup>−</sup> → Zn</div><div>-0.763</div>
+    <div>Fe</div><div>Fe<sup>2+</sup> + 2e<sup>−</sup> → Fe</div><div>-0.440</div>
+    <div>Cd</div><div>Cd<sup>2+</sup> + 2e<sup>−</sup> → Cd</div><div>-0.403</div>
+    <div>PbSO<sub>4</sub></div><div>PbSO<sub>4</sub> + 2e<sup>−</sup> → Pb + SO<sub>4</sub><sup>2−</sup></div><div>-0.310</div>
+    <div>Co</div><div>Co<sup>2+</sup> + 2e<sup>−</sup> → Co</div><div>-0.280</div>
+    <div>Ni</div><div>Ni<sup>2+</sup> + 2e<sup>−</sup> → Ni</div><div>-0.250</div>
+    <div>Sn</div><div>Sn<sup>2+</sup> + 2e<sup>−</sup> → Sn</div><div>-0.136</div>
+    <div>Pb</div><div>Pb<sup>2+</sup> + 2e<sup>−</sup> → Pb</div><div>-0.126</div>
+    <div>Fe</div><div>Fe<sup>3+</sup> + 3e<sup>−</sup> → Fe</div><div>-0.036</div>
+    <div>H<sub>2</sub></div><div>2H<sup>+</sup> + 2e<sup>−</sup> → H<sub>2</sub> (SHE)</div><div>0</div>
+    <div>Cu</div><div>Cu<sup>2+</sup> + e<sup>−</sup> → Cu<sup>+</sup></div><div>+0.153</div>
+    <div>S</div><div>S<sub>4</sub>O<sub>6</sub><sup>2−</sup> + 2e<sup>−</sup> → 2S<sub>2</sub>O<sub>3</sub><sup>2−</sup></div><div>+0.170</div>
+    <div>Cu</div><div>Cu<sup>2+</sup> + 2e<sup>−</sup> → Cu</div><div>+0.337</div>
+    <div>I<sub>2</sub></div><div>I<sub>2</sub> + 2e<sup>−</sup> → 2I<sup>−</sup></div><div>+0.534</div>
+    <div>Fe</div><div>Fe<sup>3+</sup> + e<sup>−</sup> → Fe<sup>2+</sup></div><div>+0.770</div>
+    <div>Ag</div><div>Ag<sup>+</sup> + e<sup>−</sup> → Ag</div><div>+0.799</div>
+    <div>Hg</div><div>Hg<sup>2+</sup> + 2e<sup>−</sup> → Hg</div><div>+0.854</div>
+    <div>Br<sub>2</sub></div><div>Br<sub>2</sub> + 2e<sup>−</sup> → 2Br<sup>−</sup></div><div>+1.066</div>
+    <div>O<sub>2</sub></div><div>O<sub>2</sub> + 4H<sup>+</sup> + 2e<sup>−</sup> → 2H<sub>2</sub>O</div><div>+1.230</div>
+    <div>Cr</div><div>Cr<sub>2</sub>O<sub>7</sub><sup>2−</sup> + 14H<sup>+</sup> + 6e<sup>−</sup> → 2Cr<sup>3+</sup> + 7H<sub>2</sub>O</div><div>+1.330</div>
+    <div>Cl<sub>2</sub></div><div>Cl<sub>2</sub> + 2e<sup>−</sup> → 2Cl<sup>−</sup></div><div>+1.359</div>
+    <div>Au</div><div>Au<sup>3+</sup> + 3e<sup>−</sup> → Au</div><div>+1.498</div>
+    <div>Mn</div><div>MnO<sub>4</sub><sup>−</sup> + 8H<sup>+</sup> + 5e<sup>−</sup> → Mn<sup>2+</sup> + 4H<sub>2</sub>O</div><div>+1.510</div>
+    <div>F<sub>2</sub></div><div>F<sub>2</sub> + 2e<sup>−</sup> → 2F<sup>−</sup></div><div>+2.870</div>
+  </div>
   <h3 id="timer"></h3>
   <video id="cameraPreview" autoplay muted playsinline></video>
  <div class="countdown-wrapper">
-  <div class="time-text" id="time">Time left: 10:00</div>
-  <div class="bar-container">
-    <div class="countdown-bar" id="bar" style="width: 100%;"></div>
-  </div>
-</div>
-
+ <div class="time-text" id="time">Time left: 10:00</div>
+ <div class="bar-container">
+ <div class="countdown-bar" id="bar" style="width: 100%;"></div>
+ </div>
+ </div>
+ 
+ <h1>Exam</h1>
   <iframe
   class="visible"
     id="examFrame"

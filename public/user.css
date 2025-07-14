@@ -156,6 +156,10 @@ img.logo {
   opacity: 1 !important;
 }
 
+body.unscroll {
+  height: 100vh;
+}
+
 body {
   overflow: hidden;
   display: flex;
@@ -163,7 +167,7 @@ body {
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 100vh;
+
   .slide {
     display: flex;
     flex-direction: column;
@@ -268,7 +272,7 @@ body .slide .examContainer .container {
 }
 
 body.scroll {
-  height: 100vh;
+  height: auto !important;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -384,6 +388,7 @@ iframe {
   opacity: 0 !important;
   display: none;
   border: none;
+  height: 100vh;
 }
 iframe.visible {
   opacity: 1 !important;
@@ -429,6 +434,7 @@ img {
   font-family: sans-serif;
   font-size: 16px;
   z-index: 1000;
+    border-top: 2px solid #00e0ff;
 }
 
 .countdown-bar {
@@ -450,16 +456,98 @@ img {
   color: white;
 }
 
+#cameraPreview {
+  position: fixed;
+  bottom: 58px;
+  right: 0px;
+  width: 400px;
+  height: 225px;
+  border: 2px solid #00e0ff;
+  border-radius: 16px 0px 0px 16px;
+  object-fit: cover;
+  z-index: 9999;
+  background: black;
+  transition: none;
+}
 
- #cameraPreview {
-    position: fixed;
-    bottom: 60px;
-    right: 20px;
-    width: 400px;
-    height: 225px;
-    border: 2px solid white;
-    border-radius: 10px;
-    object-fit: cover;
-    z-index: 9999;
-    background: black;
+.grid-table {
+  
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  border: 1px solid #00e0ff;
+  width: fit-content;
+  sup {
+    color: white;
+    margin-bottom: 1ch;
   }
+}
+
+.grid-table div {
+  padding: 10px;
+  border-bottom: 1px solid #00e0ff;
+  border-right: 1px solid #00e0ff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header {
+  font-weight: bold;
+  background-color: #333;
+  color: #00e0ff !important;
+
+}
+
+.grid-table > :nth-child(3n) {
+  border-right: none;
+}
+
+.grid-table > :nth-last-child(-n + 3) {
+  border-bottom: none;
+}
+
+
+/* Scrollbar container */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #333;
+  border-radius: 10px;
+}
+
+/* Thumb */
+::-webkit-scrollbar-thumb {
+  background: #00e0ff;
+  border-radius: 10px;
+  border: 2px solid #131525;
+}
+
+/* On hover */
+/* ::-webkit-scrollbar-thumb:hover {
+  background: #69208e;
+} */
+
+/* Arrow buttons (rarely shown anymore) */
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+
+
+.scroll{
+
+  h1 {
+    color: #00e0ff;
+    margin: 20px 10px;
+    padding: 10px;
+    width: 100%;
+    border-bottom: 2px solid;
+    font-size: 35px;
+    text-align: center;
+  }
+}
