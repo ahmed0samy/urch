@@ -551,3 +551,42 @@ img {
     text-align: center;
   }
 }
+
+.container:has(.periodic) {
+  background-color: #131525;
+}
+.periodic {
+  width: 100%;
+  padding: 0 16px;
+  margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+  .periodic {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .periodic {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .periodic {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .periodic {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .periodic {
+    max-width: 1536px;
+  }
+}

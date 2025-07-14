@@ -52,7 +52,8 @@ function htmlContent(link) {
  <div class="countdown-bar" id="bar" style="width: 100%;"></div>
  </div>
  </div>
- 
+ <img src="/periodic table.png" class="periodic" />
+<img class='container' src="/constants.png" />
  <h1>Exam</h1>
   <iframe
   class="visible"
@@ -100,7 +101,7 @@ setTimeout(() => {
 }, 1000);
 
 const socket = io();
-const examTime = 600; // seconds
+const examTime = 1800; // seconds
 let remainingSeconds = examTime;
 let monitoringStarted = false;
 let isSuspicious = 0;
