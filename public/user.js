@@ -136,6 +136,7 @@ function warnCheater() {
         `;
 }
 
+
 async function startExam() {
   warnErrorElement.classList.add("hidden");
   warnErrorElement.innerHTML = "";
@@ -149,75 +150,63 @@ async function startExam() {
 
   if (!userId.includes("@")) {
     warnError("This email is invalid!");
-    // alert("Please enter a valid email address.");
     return;
   }
 
-  let camStream;
+  let camStream, screenStream;
+
   try {
     camStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
   } catch (err) {
-    alert("❌ Camera access is required to continue the exam.");
-    warnError("You must allow camera access");
-    return; // stop startExam()
+    alert("❌ Camera and screen access are required to continue the exam.");
+    warnError("You must allow camera and screen access");
+    return;
   }
-  // First check with the server if the user is allowed to start
+
+  const screenCount = await getMonitorCount();
+  if (screenCount > 1) {
+    loading = false;
+    startBtn.classList.remove("disabled");
+    warnError("Please disconnect additional monitors.", 2000, false, true);
+    camStream.getTracks().forEach((t) => t.stop());
+    screenStream.getTracks().forEach((t) => t.stop());
+    return;
+  }
+
   socket.emit("exam-start", userId, async (response) => {
     if (!response.allowed) {
       switch (response.reason) {
         case "not_registered":
-          warnError(
-            "This email isn't registered in regestration form!",
-            6000,
-            true,
-            true
-          );
+          warnError("This email isn't registered in registration form!", 6000, true, true);
           break;
         case "already_attended":
           warnError("You have already attended the exam!", 6000, false, true);
           break;
         default:
-          warnError(
-            "An error has been occured! Please refresh the page and try again",
-            2000,
-            false,
-            true
-          );
+          warnError("An error has occurred! Please refresh the page and try again", 2000, false, true);
       }
-      // alert("❌ Access denied. Reason: " + (response.reason || "Not allowed"));
+      camStream.getTracks().forEach((t) => t.stop());
+      screenStream.getTracks().forEach((t) => t.stop());
       return;
     }
 
-    try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-      });
-      const screenCount = await getMonitorCount();
-      if (screenCount > 1) {
-        loading = false;
-        startBtn.classList.remove("disabled");
-        warnError("Please disconnect additional monitors.", 2000, false, true);
-        stream.getTracks().forEach((t) => t.stop());
-        return;
-      }
+    sliders.forEach((slider, i) => {
+      slider.style.left = `${(i - 2) * 100}vw`;
+    });
 
-      // Slide to exam view
-      sliders.forEach((slider, i) => {
-        slider.style.left = `${(i - 2) * 100}vw`;
-      });
+    const blackMask = document.querySelector(".black");
+    blackMask.style.right = "0";
 
-      const blackMask = document.querySelector(".black");
-      //   let timerEl = document.getElementById("timer");
-      blackMask.style.right = "0";
-      setTimeout(() => {
-        blackMask.style.right = "100vw";
-        document.body.classList.add("dark");
-        document.body.classList.remove("reddish");
-        document.body.classList.add("scroll");
-        document.body.classList.remove("unscroll");
+    setTimeout(() => {
+      blackMask.style.right = "100vw";
+      document.body.classList.add("dark");
+      document.body.classList.remove("reddish");
+      document.body.classList.add("scroll");
+      document.body.classList.remove("unscroll");
 
-        document.body.innerHTML = `
-  <img class="logo" src="/logo.png" alt="" />
+      document.body.innerHTML = `
+         <img class="logo" src="/logo.png" alt="" />
   <h1>List of all formulas and data you will need</h1>
     <div class="grid-table">
     <div class="header">Element</div>
@@ -274,96 +263,96 @@ async function startExam() {
     src="${response.link}"
     width="100%"
     height="100%"
-  ></iframe>
-`;
-        const camPreview = document.getElementById("cameraPreview");
-        camPreview.srcObject = camStream;
-        // timerEl = document.getElementById("timer");
-        timeDisplay = document.getElementById("time");
-        bar = document.getElementById("bar");
+  ></iframe>`;
 
-        const percent = (remainingSeconds / examTime) * 100;
-        bar.style.width = percent + "%";
-      }, 1000);
+      const camPreview = document.getElementById("cameraPreview");
+      camPreview.srcObject = camStream;
 
-      monitoringStarted = true;
-      socket.emit("user-join", userId);
+      timeDisplay = document.getElementById("time");
+      bar = document.getElementById("bar");
 
-      const video = document.createElement("video");
-      video.srcObject = stream;
-      video.play();
+      const percent = (remainingSeconds / examTime) * 100;
+      bar.style.width = percent + "%";
+    }, 1000);
 
-      const canvas = document.createElement("canvas");
-      const dim = 600;
-      canvas.width = (dim * 16) / 9;
-      canvas.height = dim;
-      const ctx = canvas.getContext("2d");
-      const draw = () =>
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const drawInterval = setInterval(draw, 1000);
+    monitoringStarted = true;
+    socket.emit("user-join", userId);
 
-      const recordedStream = canvas.captureStream(1);
-      const recorder = new MediaRecorder(recordedStream, {
-        mimeType: "video/webm;codecs=vp8",
-        videoBitsPerSecond: 10_000_000,
-      });
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          e.data.arrayBuffer().then((buffer) => {
-            socket.emit("video-chunk", { userId, chunk: buffer });
-          });
-        }
-      };
-      recorder.start(1000);
+    const video = document.createElement("video");
+    video.srcObject = screenStream;
+    video.play();
 
-      function updateTimer() {
-        const m = Math.floor(remainingSeconds / 60);
-        const s = String(remainingSeconds % 60).padStart(2, "0");
-        // timerEl.textContent = `Time Left: ${m}:${s}`;
-        const percent = (remainingSeconds / examTime) * 100;
-        bar.style.width = percent + "%";
-        timeDisplay.textContent = `Time Left: ${m}:${s}`;
+    const canvas = document.createElement("canvas");
+    const dim = 600;
+    canvas.width = (dim * 16) / 9;
+    canvas.height = dim;
+    const ctx = canvas.getContext("2d");
+
+    const drawInterval = setInterval(() => {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    }, 1000);
+
+    const recordedStream = canvas.captureStream(1);
+    const recorder = new MediaRecorder(recordedStream, {
+      mimeType: "video/webm;codecs=vp8",
+      videoBitsPerSecond: 10_000_000,
+    });
+
+    recorder.ondataavailable = (e) => {
+      if (e.data.size > 0) {
+        e.data.arrayBuffer().then((buffer) => {
+          socket.emit("video-chunk", { userId, chunk: buffer });
+        });
       }
+    };
 
-      const countdown = setInterval(() => {
-        remainingSeconds--;
-        updateTimer();
+    recorder.start(1000);
 
-        if (remainingSeconds <= 0) {
-          clearInterval(countdown);
-          clearInterval(drawInterval);
-          recorder.stop();
-          socket.emit("user-suspicion", { userId, isSuspicious });
-          window.focus();
-          setTimeout(() => {
-            window.open("", "_self");
-            window.close();
-          }, 100);
-        }
-      }, 1000);
-
-      const monitorCheck = setInterval(async () => {
-        const countNow = await getMonitorCount();
-        if (countNow > 1) {
-          warnCheater();
-          clearInterval(monitorCheck);
-          setTimeout(() => {
-            window.focus();
-            window.close();
-          }, 10000);
-        }
-      }, 5000);
-
-      window.addEventListener("beforeunload", () => {
-        recorder.stop();
-        clearInterval(drawInterval);
-        socket.emit("user-suspicion", { userId, isSuspicious });
-      });
-    } catch {
-      alert("Screen sharing is required to start the exam.");
+    function updateTimer() {
+      const m = Math.floor(remainingSeconds / 60);
+      const s = String(remainingSeconds % 60).padStart(2, "0");
+      const percent = (remainingSeconds / examTime) * 100;
+      bar.style.width = percent + "%";
+      timeDisplay.textContent = `Time Left: ${m}:${s}`;
     }
+
+    const countdown = setInterval(() => {
+      remainingSeconds--;
+      updateTimer();
+
+      if (remainingSeconds <= 0) {
+        clearInterval(countdown);
+        clearInterval(drawInterval);
+        recorder.stop();
+        socket.emit("user-suspicion", { userId, isSuspicious });
+        window.focus();
+        setTimeout(() => {
+          window.open("", "_self");
+          window.close();
+        }, 100);
+      }
+    }, 1000);
+
+    const monitorCheck = setInterval(async () => {
+      const countNow = await getMonitorCount();
+      if (countNow > 1) {
+        warnCheater();
+        clearInterval(monitorCheck);
+        setTimeout(() => {
+          window.focus();
+          window.close();
+        }, 10000);
+      }
+    }, 5000);
+
+    window.addEventListener("beforeunload", () => {
+      recorder.stop();
+      clearInterval(drawInterval);
+      socket.emit("user-suspicion", { userId, isSuspicious });
+    });
   });
 }
+
 
 startBtn.addEventListener("click", () => {
   if (!loading) {
