@@ -1,6 +1,68 @@
 const notiCont = document.querySelector(".notification");
 const notiText = document.querySelector(".msg");
 
+function htmlContent(link) {
+  return `
+         <img class="logo" src="/logo.png" alt="" />
+  <h1>List of all formulas and data you will need</h1>
+    <div class="grid-table">
+    <div class="header">Element</div>
+    <div class="header">Electrode Reaction</div>
+    <div class="header">E° (V)</div>
+
+    <div>Li</div><div>Li<sup>+</sup> + e<sup>−</sup> → Li</div><div>-3.045</div>
+    <div>K</div><div>K<sup>+</sup> + e<sup>−</sup> → K</div><div>-2.925</div>
+    <div>Cs</div><div>Cs<sup>+</sup> + e<sup>−</sup> → Cs</div><div>-2.923</div>
+    <div>Ba</div><div>Ba<sup>2+</sup> + 2e<sup>−</sup> → Ba</div><div>-2.906</div>
+    <div>Ca</div><div>Ca<sup>2+</sup> + 2e<sup>−</sup> → Ca</div><div>-2.866</div>
+    <div>Na</div><div>Na<sup>+</sup> + e<sup>−</sup> → Na</div><div>-2.714</div>
+    <div>Mg</div><div>Mg<sup>2+</sup> + 2e<sup>−</sup> → Mg</div><div>-2.363</div>
+    <div>Al</div><div>Al<sup>3+</sup> + 3e<sup>−</sup> → Al</div><div>-1.662</div>
+    <div>H<sub>2</sub>O</div><div>H<sub>2</sub>O + 2e<sup>−</sup> → H<sub>2</sub> + 2OH<sup>−</sup></div><div>-0.829</div>
+    <div>Zn</div><div>Zn<sup>2+</sup> + 2e<sup>−</sup> → Zn</div><div>-0.763</div>
+    <div>Fe</div><div>Fe<sup>2+</sup> + 2e<sup>−</sup> → Fe</div><div>-0.440</div>
+    <div>Cd</div><div>Cd<sup>2+</sup> + 2e<sup>−</sup> → Cd</div><div>-0.403</div>
+    <div>PbSO<sub>4</sub></div><div>PbSO<sub>4</sub> + 2e<sup>−</sup> → Pb + SO<sub>4</sub><sup>2−</sup></div><div>-0.310</div>
+    <div>Co</div><div>Co<sup>2+</sup> + 2e<sup>−</sup> → Co</div><div>-0.280</div>
+    <div>Ni</div><div>Ni<sup>2+</sup> + 2e<sup>−</sup> → Ni</div><div>-0.250</div>
+    <div>Sn</div><div>Sn<sup>2+</sup> + 2e<sup>−</sup> → Sn</div><div>-0.136</div>
+    <div>Pb</div><div>Pb<sup>2+</sup> + 2e<sup>−</sup> → Pb</div><div>-0.126</div>
+    <div>Fe</div><div>Fe<sup>3+</sup> + 3e<sup>−</sup> → Fe</div><div>-0.036</div>
+    <div>H<sub>2</sub></div><div>2H<sup>+</sup> + 2e<sup>−</sup> → H<sub>2</sub> (SHE)</div><div>0</div>
+    <div>Cu</div><div>Cu<sup>2+</sup> + e<sup>−</sup> → Cu<sup>+</sup></div><div>+0.153</div>
+    <div>S</div><div>S<sub>4</sub>O<sub>6</sub><sup>2−</sup> + 2e<sup>−</sup> → 2S<sub>2</sub>O<sub>3</sub><sup>2−</sup></div><div>+0.170</div>
+    <div>Cu</div><div>Cu<sup>2+</sup> + 2e<sup>−</sup> → Cu</div><div>+0.337</div>
+    <div>I<sub>2</sub></div><div>I<sub>2</sub> + 2e<sup>−</sup> → 2I<sup>−</sup></div><div>+0.534</div>
+    <div>Fe</div><div>Fe<sup>3+</sup> + e<sup>−</sup> → Fe<sup>2+</sup></div><div>+0.770</div>
+    <div>Ag</div><div>Ag<sup>+</sup> + e<sup>−</sup> → Ag</div><div>+0.799</div>
+    <div>Hg</div><div>Hg<sup>2+</sup> + 2e<sup>−</sup> → Hg</div><div>+0.854</div>
+    <div>Br<sub>2</sub></div><div>Br<sub>2</sub> + 2e<sup>−</sup> → 2Br<sup>−</sup></div><div>+1.066</div>
+    <div>O<sub>2</sub></div><div>O<sub>2</sub> + 4H<sup>+</sup> + 2e<sup>−</sup> → 2H<sub>2</sub>O</div><div>+1.230</div>
+    <div>Cr</div><div>Cr<sub>2</sub>O<sub>7</sub><sup>2−</sup> + 14H<sup>+</sup> + 6e<sup>−</sup> → 2Cr<sup>3+</sup> + 7H<sub>2</sub>O</div><div>+1.330</div>
+    <div>Cl<sub>2</sub></div><div>Cl<sub>2</sub> + 2e<sup>−</sup> → 2Cl<sup>−</sup></div><div>+1.359</div>
+    <div>Au</div><div>Au<sup>3+</sup> + 3e<sup>−</sup> → Au</div><div>+1.498</div>
+    <div>Mn</div><div>MnO<sub>4</sub><sup>−</sup> + 8H<sup>+</sup> + 5e<sup>−</sup> → Mn<sup>2+</sup> + 4H<sub>2</sub>O</div><div>+1.510</div>
+    <div>F<sub>2</sub></div><div>F<sub>2</sub> + 2e<sup>−</sup> → 2F<sup>−</sup></div><div>+2.870</div>
+  </div>
+  <h3 id="timer"></h3>
+  <video id="cameraPreview" autoplay muted playsinline></video>
+ <div class="countdown-wrapper">
+ <div class="time-text" id="time">Time left: 10:00</div>
+ <div class="bar-container">
+ <div class="countdown-bar" id="bar" style="width: 100%;"></div>
+ </div>
+ </div>
+ 
+ <h1>Exam</h1>
+  <iframe
+  class="visible"
+    id="examFrame"
+    src="${link}"
+    width="100%"
+    height="100%"
+  ></iframe>`;
+}
+
 function showNoti(msg, time) {
   notiText.innerText = msg;
 
@@ -82,7 +144,7 @@ setInterval(() => {
     window.outerWidth - window.innerWidth > threshold ||
     window.outerHeight - window.innerHeight > threshold;
   if (devtoolsOpen) {
-    isSuspicious =  Math.max(3, isSuspicious);
+    isSuspicious = Math.max(3, isSuspicious);
     console.warn("DevTools detected");
   }
 }, 1000);
@@ -136,7 +198,6 @@ function warnCheater() {
         `;
 }
 
-
 async function startExam() {
   warnErrorElement.classList.add("hidden");
   warnErrorElement.innerHTML = "";
@@ -144,36 +205,38 @@ async function startExam() {
   const emailInput = document.getElementById("email");
   const userId = emailInput.value.trim();
 
-  emailInput.addEventListener("input", () => {
-    startBtn.classList.remove("disabled");
-  });
-
   if (!userId.includes("@")) {
-    warnError("This email is invalid!");
+    warnError("This email is invalid!", 2000, true, true);
+    loading = false;
+    startBtn.classList.remove("disabled");
     return;
   }
 
+  // Request permissions directly in the click handler
   let camStream, screenStream;
-
   try {
     camStream = await navigator.mediaDevices.getUserMedia({ video: true });
     screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
   } catch (err) {
-    alert("❌ Camera and screen access are required to continue the exam.");
-    warnError("You must allow camera and screen access");
+    console.error("Permission error:", err);
+    warnError("You must allow camera and screen access", 2000, true, true);
+    loading = false;
+    startBtn.classList.remove("disabled");
     return;
   }
 
+  // Check monitor count after permissions are granted
   const screenCount = await getMonitorCount();
   if (screenCount > 1) {
-    loading = false;
-    startBtn.classList.remove("disabled");
     warnError("Please disconnect additional monitors.", 2000, false, true);
     camStream.getTracks().forEach((t) => t.stop());
     screenStream.getTracks().forEach((t) => t.stop());
+    loading = false;
+    startBtn.classList.remove("disabled");
     return;
   }
 
+  // Now proceed with socket communication
   socket.emit("exam-start", userId, async (response) => {
     if (!response.allowed) {
       switch (response.reason) {
@@ -188,9 +251,12 @@ async function startExam() {
       }
       camStream.getTracks().forEach((t) => t.stop());
       screenStream.getTracks().forEach((t) => t.stop());
+      loading = false;
+      startBtn.classList.remove("disabled");
       return;
     }
 
+    // Proceed with exam setup
     sliders.forEach((slider, i) => {
       slider.style.left = `${(i - 2) * 100}vw`;
     });
@@ -205,65 +271,7 @@ async function startExam() {
       document.body.classList.add("scroll");
       document.body.classList.remove("unscroll");
 
-      document.body.innerHTML = `
-         <img class="logo" src="/logo.png" alt="" />
-  <h1>List of all formulas and data you will need</h1>
-    <div class="grid-table">
-    <div class="header">Element</div>
-    <div class="header">Electrode Reaction</div>
-    <div class="header">E° (V)</div>
-
-    <div>Li</div><div>Li<sup>+</sup> + e<sup>−</sup> → Li</div><div>-3.045</div>
-    <div>K</div><div>K<sup>+</sup> + e<sup>−</sup> → K</div><div>-2.925</div>
-    <div>Cs</div><div>Cs<sup>+</sup> + e<sup>−</sup> → Cs</div><div>-2.923</div>
-    <div>Ba</div><div>Ba<sup>2+</sup> + 2e<sup>−</sup> → Ba</div><div>-2.906</div>
-    <div>Ca</div><div>Ca<sup>2+</sup> + 2e<sup>−</sup> → Ca</div><div>-2.866</div>
-    <div>Na</div><div>Na<sup>+</sup> + e<sup>−</sup> → Na</div><div>-2.714</div>
-    <div>Mg</div><div>Mg<sup>2+</sup> + 2e<sup>−</sup> → Mg</div><div>-2.363</div>
-    <div>Al</div><div>Al<sup>3+</sup> + 3e<sup>−</sup> → Al</div><div>-1.662</div>
-    <div>H<sub>2</sub>O</div><div>H<sub>2</sub>O + 2e<sup>−</sup> → H<sub>2</sub> + 2OH<sup>−</sup></div><div>-0.829</div>
-    <div>Zn</div><div>Zn<sup>2+</sup> + 2e<sup>−</sup> → Zn</div><div>-0.763</div>
-    <div>Fe</div><div>Fe<sup>2+</sup> + 2e<sup>−</sup> → Fe</div><div>-0.440</div>
-    <div>Cd</div><div>Cd<sup>2+</sup> + 2e<sup>−</sup> → Cd</div><div>-0.403</div>
-    <div>PbSO<sub>4</sub></div><div>PbSO<sub>4</sub> + 2e<sup>−</sup> → Pb + SO<sub>4</sub><sup>2−</sup></div><div>-0.310</div>
-    <div>Co</div><div>Co<sup>2+</sup> + 2e<sup>−</sup> → Co</div><div>-0.280</div>
-    <div>Ni</div><div>Ni<sup>2+</sup> + 2e<sup>−</sup> → Ni</div><div>-0.250</div>
-    <div>Sn</div><div>Sn<sup>2+</sup> + 2e<sup>−</sup> → Sn</div><div>-0.136</div>
-    <div>Pb</div><div>Pb<sup>2+</sup> + 2e<sup>−</sup> → Pb</div><div>-0.126</div>
-    <div>Fe</div><div>Fe<sup>3+</sup> + 3e<sup>−</sup> → Fe</div><div>-0.036</div>
-    <div>H<sub>2</sub></div><div>2H<sup>+</sup> + 2e<sup>−</sup> → H<sub>2</sub> (SHE)</div><div>0</div>
-    <div>Cu</div><div>Cu<sup>2+</sup> + e<sup>−</sup> → Cu<sup>+</sup></div><div>+0.153</div>
-    <div>S</div><div>S<sub>4</sub>O<sub>6</sub><sup>2−</sup> + 2e<sup>−</sup> → 2S<sub>2</sub>O<sub>3</sub><sup>2−</sup></div><div>+0.170</div>
-    <div>Cu</div><div>Cu<sup>2+</sup> + 2e<sup>−</sup> → Cu</div><div>+0.337</div>
-    <div>I<sub>2</sub></div><div>I<sub>2</sub> + 2e<sup>−</sup> → 2I<sup>−</sup></div><div>+0.534</div>
-    <div>Fe</div><div>Fe<sup>3+</sup> + e<sup>−</sup> → Fe<sup>2+</sup></div><div>+0.770</div>
-    <div>Ag</div><div>Ag<sup>+</sup> + e<sup>−</sup> → Ag</div><div>+0.799</div>
-    <div>Hg</div><div>Hg<sup>2+</sup> + 2e<sup>−</sup> → Hg</div><div>+0.854</div>
-    <div>Br<sub>2</sub></div><div>Br<sub>2</sub> + 2e<sup>−</sup> → 2Br<sup>−</sup></div><div>+1.066</div>
-    <div>O<sub>2</sub></div><div>O<sub>2</sub> + 4H<sup>+</sup> + 2e<sup>−</sup> → 2H<sub>2</sub>O</div><div>+1.230</div>
-    <div>Cr</div><div>Cr<sub>2</sub>O<sub>7</sub><sup>2−</sup> + 14H<sup>+</sup> + 6e<sup>−</sup> → 2Cr<sup>3+</sup> + 7H<sub>2</sub>O</div><div>+1.330</div>
-    <div>Cl<sub>2</sub></div><div>Cl<sub>2</sub> + 2e<sup>−</sup> → 2Cl<sup>−</sup></div><div>+1.359</div>
-    <div>Au</div><div>Au<sup>3+</sup> + 3e<sup>−</sup> → Au</div><div>+1.498</div>
-    <div>Mn</div><div>MnO<sub>4</sub><sup>−</sup> + 8H<sup>+</sup> + 5e<sup>−</sup> → Mn<sup>2+</sup> + 4H<sub>2</sub>O</div><div>+1.510</div>
-    <div>F<sub>2</sub></div><div>F<sub>2</sub> + 2e<sup>−</sup> → 2F<sup>−</sup></div><div>+2.870</div>
-  </div>
-  <h3 id="timer"></h3>
-  <video id="cameraPreview" autoplay muted playsinline></video>
- <div class="countdown-wrapper">
- <div class="time-text" id="time">Time left: 10:00</div>
- <div class="bar-container">
- <div class="countdown-bar" id="bar" style="width: 100%;"></div>
- </div>
- </div>
- 
- <h1>Exam</h1>
-  <iframe
-  class="visible"
-    id="examFrame"
-    src="${response.link}"
-    width="100%"
-    height="100%"
-  ></iframe>`;
+      document.body.innerHTML = htmlContent(response.link)
 
       const camPreview = document.getElementById("cameraPreview");
       camPreview.srcObject = camStream;
@@ -273,86 +281,93 @@ async function startExam() {
 
       const percent = (remainingSeconds / examTime) * 100;
       bar.style.width = percent + "%";
-    }, 1000);
 
-    monitoringStarted = true;
-    socket.emit("user-join", userId);
+      monitoringStarted = true;
+      socket.emit("user-join", userId);
 
-    const video = document.createElement("video");
-    video.srcObject = screenStream;
-    video.play();
+      const video = document.createElement("video");
+      video.srcObject = screenStream;
+      video.play();
 
-    const canvas = document.createElement("canvas");
-    const dim = 600;
-    canvas.width = (dim * 16) / 9;
-    canvas.height = dim;
-    const ctx = canvas.getContext("2d");
+      const canvas = document.createElement("canvas");
+      const dim = 600;
+      canvas.width = (dim * 16) / 9;
+      canvas.height = dim;
+      const ctx = canvas.getContext("2d");
 
-    const drawInterval = setInterval(() => {
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    }, 1000);
+      const drawInterval = setInterval(() => {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      }, 1000);
 
-    const recordedStream = canvas.captureStream(1);
-    const recorder = new MediaRecorder(recordedStream, {
-      mimeType: "video/webm;codecs=vp8",
-      videoBitsPerSecond: 10_000_000,
-    });
+      const recordedStream = canvas.captureStream(1);
+      const recorder = new MediaRecorder(recordedStream, {
+        mimeType: "video/webm;codecs=vp8",
+        videoBitsPerSecond: 10_000_000,
+      });
 
-    recorder.ondataavailable = (e) => {
-      if (e.data.size > 0) {
-        e.data.arrayBuffer().then((buffer) => {
-          socket.emit("video-chunk", { userId, chunk: buffer });
-        });
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          e.data.arrayBuffer().then((buffer) => {
+            socket.emit("video-chunk", { userId, chunk: buffer });
+          });
+        }
+      };
+
+      recorder.start(1000);
+
+      function updateTimer() {
+        const m = Math.floor(remainingSeconds / 60);
+        const s = String(remainingSeconds % 60).padStart(2, "0");
+        const percent = (remainingSeconds / examTime) * 100;
+        bar.style.width = percent + "%";
+        timeDisplay.textContent = `Time Left: ${m}:${s}`;
       }
-    };
 
-    recorder.start(1000);
+      const countdown = setInterval(() => {
+        remainingSeconds--;
+        updateTimer();
 
-    function updateTimer() {
-      const m = Math.floor(remainingSeconds / 60);
-      const s = String(remainingSeconds % 60).padStart(2, "0");
-      const percent = (remainingSeconds / examTime) * 100;
-      bar.style.width = percent + "%";
-      timeDisplay.textContent = `Time Left: ${m}:${s}`;
-    }
-
-    const countdown = setInterval(() => {
-      remainingSeconds--;
-      updateTimer();
-
-      if (remainingSeconds <= 0) {
-        clearInterval(countdown);
-        clearInterval(drawInterval);
-        recorder.stop();
-        socket.emit("user-suspicion", { userId, isSuspicious });
-        window.focus();
-        setTimeout(() => {
-          window.open("", "_self");
-          window.close();
-        }, 100);
-      }
-    }, 1000);
-
-    const monitorCheck = setInterval(async () => {
-      const countNow = await getMonitorCount();
-      if (countNow > 1) {
-        warnCheater();
-        clearInterval(monitorCheck);
-        setTimeout(() => {
+        if (remainingSeconds <= 0) {
+          clearInterval(countdown);
+          clearInterval(drawInterval);
+          recorder.stop();
+          socket.emit("user-suspicion", { userId, isSuspicious });
           window.focus();
-          window.close();
-        }, 10000);
-      }
-    }, 5000);
+          setTimeout(() => {
+            window.open("", "_self");
+            window.close();
+          }, 100);
+        }
+      }, 1000);
 
-    window.addEventListener("beforeunload", () => {
-      recorder.stop();
-      clearInterval(drawInterval);
-      socket.emit("user-suspicion", { userId, isSuspicious });
-    });
+      const monitorCheck = setInterval(async () => {
+        const countNow = await getMonitorCount();
+        if (countNow > 1) {
+          warnCheater();
+          clearInterval(monitorCheck);
+          setTimeout(() => {
+            window.focus();
+            window.close();
+          }, 10000);
+        }
+      }, 5000);
+
+      window.addEventListener("beforeunload", () => {
+        recorder.stop();
+        clearInterval(drawInterval);
+        socket.emit("user-suspicion", { userId, isSuspicious });
+      });
+    }, 1000);
   });
 }
 
+startBtn.addEventListener("click", () => {
+  if (!loading) {
+    loading = true;
+    startBtn.classList.add("disabled");
+    startExam();
+  }
+});
 
 startBtn.addEventListener("click", () => {
   if (!loading) {
