@@ -163,9 +163,24 @@ window.addEventListener("blur", () => {
 });
 
 async function getMonitorCount() {
-  const details = await window.getScreenDetails();
-  return details.screens.length;
+  if (!window.getScreenDetails) {
+    console.warn("getScreenDetails not supported in this browser.");
+    return 1; // Assume single monitor
+  }
+  try {
+    const permissionStatus = await navigator.permissions.query({ name: "window-management" });
+    if (permissionStatus.state === "granted") {
+      const details = await window.getScreenDetails();
+      return details.screens.length;
+    } else {
+      throw new Error("Window management permission required");
+    }
+  } catch (err) {
+    console.error("Error accessing screen details:", err);
+    throw err;
+  }
 }
+
 let loading = false;
 let startBtn = document.getElementById("startBtn");
 
@@ -185,6 +200,7 @@ function warnError(msg, waitTime, isOnInput = true, isFloating) {
     showNoti(msg, waitTime);
   }
 }
+
 function warnCheater() {
   document.body.innerHTML += `
           <div class="warnfulpage">
@@ -212,31 +228,57 @@ async function startExam() {
     return;
   }
 
-  // Request permissions directly in the click handler
-  let camStream, screenStream;
+  // Request window-management permission first
+  let screenCount;
   try {
-    camStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    screenCount = await getMonitorCount();
+    if (screenCount > 1) {
+      warnError("Please disconnect additional monitors.", 2000, false, true);
+      loading = false;
+      startBtn.classList.remove("disabled");
+      return;
+    }
+  } catch (err) {
+    console.error("Window management permission error:", err);
+    warnError("Please allow window management permission in your browser settings.", 3000, false, true);
+    loading = false;
+    startBtn.classList.remove("disabled");
+    return;
+  }
+
+  // Check camera permission status
+  let camStream;
+  try {
+    const cameraPermission = await navigator.permissions.query({ name: "camera" });
+    if (cameraPermission.state === "granted") {
+      camStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    } else if (cameraPermission.state === "prompt") {
+      camStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    } else {
+      throw new Error("Camera permission denied");
+    }
+  } catch (err) {
+    console.error("Camera permission error:", err);
+    warnError("You must allow camera access to proceed.", 2000, true, true);
+    loading = false;
+    startBtn.classList.remove("disabled");
+    return;
+  }
+
+  // Request screen-sharing permission
+  let screenStream;
+  try {
     screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
   } catch (err) {
-    console.error("Permission error:", err);
-    warnError("You must allow camera and screen access", 2000, true, true);
-    loading = false;
-    startBtn.classList.remove("disabled");
-    return;
-  }
-
-  // Check monitor count after permissions are granted
-  const screenCount = await getMonitorCount();
-  if (screenCount > 1) {
-    warnError("Please disconnect additional monitors.", 2000, false, true);
+    console.error("Screen-sharing permission error:", err);
+    warnError("You must allow screen-sharing to proceed.", 2000, true, true);
     camStream.getTracks().forEach((t) => t.stop());
-    screenStream.getTracks().forEach((t) => t.stop());
     loading = false;
     startBtn.classList.remove("disabled");
     return;
   }
 
-  // Now proceed with socket communication
+  // Proceed with socket communication
   socket.emit("exam-start", userId, async (response) => {
     if (!response.allowed) {
       switch (response.reason) {
@@ -247,7 +289,7 @@ async function startExam() {
           warnError("You have already attended the exam!", 6000, false, true);
           break;
         default:
-          warnError("An error has occurred! Please refresh the page and try again", 2000, false, true);
+          warnError("An error has occurred! Please refresh the page and try again.", 2000, false, true);
       }
       camStream.getTracks().forEach((t) => t.stop());
       screenStream.getTracks().forEach((t) => t.stop());
@@ -271,7 +313,7 @@ async function startExam() {
       document.body.classList.add("scroll");
       document.body.classList.remove("unscroll");
 
-      document.body.innerHTML = htmlContent(response.link)
+      document.body.innerHTML = htmlContent(response.link);
 
       const camPreview = document.getElementById("cameraPreview");
       camPreview.srcObject = camStream;
@@ -341,8 +383,18 @@ async function startExam() {
       }, 1000);
 
       const monitorCheck = setInterval(async () => {
-        const countNow = await getMonitorCount();
-        if (countNow > 1) {
+        try {
+          const countNow = await getMonitorCount();
+          if (countNow > 1) {
+            warnCheater();
+            clearInterval(monitorCheck);
+            setTimeout(() => {
+              window.focus();
+              window.close();
+            }, 10000);
+          }
+        } catch (err) {
+          console.error("Monitor check error:", err);
           warnCheater();
           clearInterval(monitorCheck);
           setTimeout(() => {
@@ -360,14 +412,6 @@ async function startExam() {
     }, 1000);
   });
 }
-
-startBtn.addEventListener("click", () => {
-  if (!loading) {
-    loading = true;
-    startBtn.classList.add("disabled");
-    startExam();
-  }
-});
 
 startBtn.addEventListener("click", () => {
   if (!loading) {
