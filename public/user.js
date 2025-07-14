@@ -163,17 +163,32 @@ window.addEventListener("blur", () => {
 });
 
 async function getMonitorCount() {
+  if (!window.isSecureContext) {
+    console.warn("This page must be served over HTTPS to access screen details.");
+    warnError("Please access this site over HTTPS to proceed.", 3000, false, true);
+    return 1; // Fallback to assume single monitor
+  }
   if (!window.getScreenDetails) {
     console.warn("getScreenDetails not supported in this browser.");
-    return 1; // Assume single monitor
+    return 1; // Fallback for unsupported browsers
   }
   try {
+    // Check permission state
     const permissionStatus = await navigator.permissions.query({ name: "window-management" });
     if (permissionStatus.state === "granted") {
       const details = await window.getScreenDetails();
       return details.screens.length;
+    } else if (permissionStatus.state === "prompt") {
+      // Attempt to trigger the permission prompt
+      try {
+        const details = await window.getScreenDetails();
+        return details.screens.length;
+      } catch (promptErr) {
+        console.error("Failed to prompt for window-management permission:", promptErr);
+        throw new Error("Please allow window management permission in your browser settings (e.g., chrome://settings/content/window-management).");
+      }
     } else {
-      throw new Error("Window management permission required");
+      throw new Error("Window management permission denied. Please enable it in your browser settings.");
     }
   } catch (err) {
     console.error("Error accessing screen details:", err);
@@ -240,7 +255,7 @@ async function startExam() {
     }
   } catch (err) {
     console.error("Window management permission error:", err);
-    warnError("Please allow window management permission in your browser settings.", 3000, false, true);
+    warnError(err.message || "Please allow window management permission in your browser settings (e.g., chrome://settings/content/window-management).", 4000, false, true);
     loading = false;
     startBtn.classList.remove("disabled");
     return;
@@ -250,9 +265,7 @@ async function startExam() {
   let camStream;
   try {
     const cameraPermission = await navigator.permissions.query({ name: "camera" });
-    if (cameraPermission.state === "granted") {
-      camStream = await navigator.mediaDevices.getUserMedia({ video: true });
-    } else if (cameraPermission.state === "prompt") {
+    if (cameraPermission.state === "granted" || cameraPermission.state === "prompt") {
       camStream = await navigator.mediaDevices.getUserMedia({ video: true });
     } else {
       throw new Error("Camera permission denied");
