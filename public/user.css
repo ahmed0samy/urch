@@ -590,3 +590,12 @@ img {
     max-width: 1536px;
   }
 }
+
+
+
+
+
+
+.slide video {
+  width: 100%;
+}

@@ -52,8 +52,8 @@ function htmlContent(link) {
  <div class="countdown-bar" id="bar" style="width: 100%;"></div>
  </div>
  </div>
- <img src="/periodic table.png" class="periodic" />
-<img class='container' src="/constants.png" />
+ <img src="https://res.cloudinary.com/drsg8lcbn/image/upload/v1752576131/periodic_table_xlaiyd.png" class="periodic" />
+<img class='container' https://res.cloudinary.com/drsg8lcbn/image/upload/v1752576120/constants_dv3cup.png" />
  <h1>Exam</h1>
   <iframe
   class="visible"
@@ -90,10 +90,16 @@ sliders.forEach((slider, i) => {
   slider.style.left = `${i * 100}vw`;
 });
 const nextBtn = document.querySelectorAll(".next")[0];
+const permissionNextBtn = document.querySelectorAll(".next")[1]
 let currentSliden = 1;
 nextBtn.addEventListener("click", (eo) => {
   sliders.forEach((slider, i) => {
     slider.style.left = `${(i - 1) * 100}vw`;
+  });
+});
+permissionNextBtn.addEventListener("click", (eo) => {
+  sliders.forEach((slider, i) => {
+    slider.style.left = `${(i - 2) * 100}vw`;
   });
 });
 setTimeout(() => {
@@ -221,7 +227,7 @@ function warnCheater() {
   document.body.innerHTML += `
           <div class="warnfulpage">
             <video id="myVideo" autoplay muted>
-              <source src="./cheater.mp4" type="video/mp4">
+              <source src="https://res.cloudinary.com/drsg8lcbn/video/upload/v1752576123/cheater_gjafj7.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
             <h1>Bye!</h1>

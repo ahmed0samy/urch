@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(__dirname, "public")));
 
 const connectedUsers = new Map();
 const userSuspicionMap = new Map();
@@ -85,9 +85,8 @@ io.on("connection", (socket) => {
   });
 });
 
-// Routes
-app.get("/ping", (req, res) => {
-  res.send("pong");
+app.get('/user', (req, res) => {
+  res.sendFile(__dirname + '/public' + '/user.html');
 });
 
 const PORT = process.env.PORT || 3000;
