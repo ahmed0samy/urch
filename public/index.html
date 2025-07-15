@@ -57,7 +57,7 @@
           const token = crypto.randomUUID();
           sessionStorage.setItem("exam-token", token); // store in session
 
-          const examWindow = window.open(`user.html?user=${token}`, "_blank");
+          const examWindow = window.open(`user?user=${token}`, "_blank");
         }, 4000);
 
         setTimeout(() => {
