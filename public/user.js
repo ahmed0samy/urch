@@ -60,12 +60,14 @@ function htmlContent(link) {
 <img class='container' src="https://res.cloudinary.com/drsg8lcbn/image/upload/v1752576120/constants_dv3cup.png" />
  <h1>Exam</h1>
   <iframe
+ onload="resizeIframe(this)" 
   class="visible"
     id="examFrame"
     src="${link}"
     width="100%"
-    height="100%"
-  ></iframe>`;
+  ></iframe>
+  <div class="gap"></div>
+  `;
 }
 
 function showNoti(msg, time) {
@@ -99,15 +101,21 @@ sliders.forEach((slider, i) => {
 const nextBtn = document.querySelectorAll(".next")[0];
 const permissionNextBtn = document.querySelectorAll(".next")[1];
 let currentSliden = 1;
+
 nextBtn.addEventListener("click", (eo) => {
   sliders.forEach((slider, i) => {
     slider.style.left = `${(i - 1) * 100}vw`;
   });
+  setTimeout(() => {
+    permissionNextBtn.classList.remove("disabled");
+  }, 16000);
 });
 permissionNextBtn.addEventListener("click", (eo) => {
-  sliders.forEach((slider, i) => {
-    slider.style.left = `${(i - 2) * 100}vw`;
-  });
+  if (!permissionNextBtn.classList.contains("disabled")) {
+    sliders.forEach((slider, i) => {
+      slider.style.left = `${(i - 2) * 100}vw`;
+    });
+  }
 });
 setTimeout(() => {
   document.body.classList.add("reddish");
@@ -128,10 +136,6 @@ if (!token || token !== sessionToken) {
  <h1>❌ Unauthorized access</h1> </div>`;
   // throw new Error("Blocked manual access to exam page");
 }
-
-setInterval(() => {
-  socket.emit("heartbeat", { userId }); // send every 5 seconds
-}, 5000);
 
 socket.on("stop-recording", ({ reason }) => {
   console.warn("Recording stopped due to:", reason);
@@ -193,6 +197,10 @@ window.addEventListener("blur", () => {
 });
 
 async function getMonitorCount() {
+  if (navigator.userAgent.includes("Mac") && !window.getScreenDetails) {
+    return 1;
+  }
+
   if (!window.isSecureContext) {
     console.warn(
       "This page must be served over HTTPS to access screen details."
@@ -205,6 +213,7 @@ async function getMonitorCount() {
     );
     return 1; // Fallback to assume single monitor
   }
+
   if (!window.getScreenDetails) {
     console.warn("getScreenDetails not supported in this browser.");
     return 1; // Fallback for unsupported browsers
@@ -333,7 +342,12 @@ async function startExam() {
   } catch (err) {
     console.error("Camera permission error:", err);
     warnError("You must allow camera access to proceed.", 2000, false, true);
-    warnError("Close any app using the camera, and check camera permission.", 2000, true, false);
+    warnError(
+      "Close any app using the camera, and check camera permission.",
+      2000,
+      true,
+      false
+    );
     loading = false;
     startBtn.classList.remove("disabled");
     return;
@@ -355,8 +369,8 @@ async function startExam() {
   }
   screenStream.getVideoTracks()[0].addEventListener("ended", () => {
     warnError(
-      "Screen sharing was stopped! You are disqualified.",
-      10000,
+      "Screen sharing was stopped! Exam will close right now.",
+      9000,
       false,
       true
     );
@@ -439,7 +453,7 @@ async function startExam() {
 
       const drawInterval = setInterval(() => {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      }, 1000);
+      }, 10);
 
       const recordedStream = canvas.captureStream(1);
       const recorder = new MediaRecorder(recordedStream, {
@@ -460,6 +474,9 @@ async function startExam() {
           });
         }
       };
+      setInterval(() => {
+        socket.emit("heartbeat", { userId }); // send every 5 seconds
+      }, 5000);
 
       recorder.start(1000);
 
@@ -526,3 +543,8 @@ startBtn.addEventListener("click", () => {
     startExam();
   }
 });
+
+function resizeIframe(obj) {
+  obj.style.height =
+    obj.contentWindow.document.documentElement.scrollHeight + "px";
+}

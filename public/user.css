@@ -1,3 +1,10 @@
+/*
+* Prefixed by:
+* PostCSS: v7.0.29,
+* Autoprefixer: v9.7.6
+* Browsers: last 4 version
+*/
+
 @import url("https://fonts.googleapis.com/css2?family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap");
 
 * {
@@ -5,8 +12,11 @@
   padding: 0;
   font-family: "Winky Rough", sans-serif;
   color: #131525;
+  -webkit-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
 body {
@@ -28,7 +38,8 @@ body.reddish {
   padding: 1rem;
   background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   max-width: 90%; /* fallback for very small screens */
 }
 
@@ -82,10 +93,19 @@ body.reddish {
   width: 100vw;
   height: 100vh;
   background: "./cooked.jpg";
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   background-color: black;
   video {
     /* width: 100%; */
@@ -93,7 +113,9 @@ body.reddish {
     position: fixed;
     top: 0;
     left: 50%;
-    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+        -ms-transform: translateX(-50%);
+            transform: translateX(-50%);
     z-index: -1;
   }
 
@@ -119,14 +141,35 @@ body.reddish {
   font-family: "Comic Sans MS", cursive, sans-serif;
   width: 100vw;
   height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 body * {
-  animation: fade 3s 1 ease-in-out forwards;
+  -webkit-animation: fade 3s 1 ease-in-out forwards;
+          animation: fade 3s 1 ease-in-out forwards;
   opacity: 0;
+}
+
+@-webkit-keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  /* 50%{
+    
+    opacity: 0;
+    
+  } */
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes fade {
@@ -149,9 +192,13 @@ img.logo {
   z-index: 2;
   width: 130px;
   height: 130px;
-  transform: translate(0, 0);
+  -webkit-transform: translate(0, 0);
+      -ms-transform: translate(0, 0);
+          transform: translate(0, 0);
   top: 20px;
   left: 20px;
+  -webkit-transition: all 0.5s 1 ease-in-out;
+  -o-transition: all 0.5s 1 ease-in-out;
   transition: all 0.5s 1 ease-in-out;
   opacity: 1 !important;
 }
@@ -162,30 +209,60 @@ body.unscroll {
 
 body {
   overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   width: 100vw;
 
   .slide {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
     width: 100vw;
     height: 100vh;
     position: fixed;
+    -webkit-transition: left 1s ease-in-out;
+    -o-transition: left 1s ease-in-out;
     transition: left 1s ease-in-out;
     .container {
       bottom: 50%;
+      display: -webkit-box;
+      display: -ms-flexbox;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+              flex-direction: column;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center;
+      -webkit-box-pack: justify;
+          -ms-flex-pack: justify;
+              justify-content: space-between;
       overflow: hidden;
       align-items: center;
-      align-content: center;
+      -ms-flex-line-pack: center;
+          align-content: center;
       padding: 0;
     }
   }
@@ -197,6 +274,7 @@ body {
 
 h2 {
   /* background-color: #131525; */
+  background: -o-linear-gradient(45deg, #69208e, #f71746);
   background: linear-gradient(45deg, #69208e, #f71746);
 
   color: white;
@@ -211,6 +289,7 @@ ol {
 }
 
 button {
+  background: -o-linear-gradient(45deg, #69208e, #f71746);
   background: linear-gradient(45deg, #69208e, #f71746);
   outline: none;
   border: none;
@@ -255,6 +334,8 @@ body.dark {
   right: -100vw;
   z-index: 30;
   opacity: 1;
+  -webkit-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
   transition: all 1s ease-in-out;
 }
 /* .black.activeblack {
@@ -268,7 +349,8 @@ body.dark {
 body .slide .examContainer .container {
   height: 100% !important;
   background-color: transparent;
-  box-shadow: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
 }
 
 body.scroll {
@@ -289,7 +371,9 @@ body.scroll {
 .disabled {
   opacity: 0.5 !important;
   cursor: not-allowed;
-  transform: scale(0.95);
+  -webkit-transform: scale(0.95);
+      -ms-transform: scale(0.95);
+          transform: scale(0.95);
 }
 
 #warnerror {
@@ -308,16 +392,26 @@ body.scroll {
   position: fixed;
   bottom: -80px;
   right: 50%;
-  transform: translateX(50%);
+  -webkit-transform: translateX(50%);
+      -ms-transform: translateX(50%);
+          transform: translateX(50%);
   background-color: #f71746;
   width: 60px;
   height: 60px;
   overflow: hidden;
   padding: 10px 17px 10px 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: space-between;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   border-radius: 120px;
-  align-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-transition: all 0.3s cubic-bezier(1, 0, 0, 1);
+  -o-transition: all 0.3s cubic-bezier(1, 0, 0, 1);
   transition: all 0.3s cubic-bezier(1, 0, 0, 1);
   opacity: 0;
   cursor: pointer;
@@ -332,7 +426,8 @@ body.scroll {
   opacity: 0;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+     text-overflow: ellipsis;
 }
 
 .notification img {
@@ -341,12 +436,32 @@ body.scroll {
 
 /* Animation In */
 .notification.active {
-  animation: slideIn 1s forwards cubic-bezier(1, 0, 0, 1);
+  -webkit-animation: slideIn 1s forwards cubic-bezier(1, 0, 0, 1);
+          animation: slideIn 1s forwards cubic-bezier(1, 0, 0, 1);
 }
 
 /* Animation Out */
 .notification.inactive {
-  animation: slideOut 1s forwards cubic-bezier(1, 0, 0, 1);
+  -webkit-animation: slideOut 1s forwards cubic-bezier(1, 0, 0, 1);
+          animation: slideOut 1s forwards cubic-bezier(1, 0, 0, 1);
+}
+
+@-webkit-keyframes slideIn {
+  0% {
+    bottom: -80px;
+    width: 60px;
+    opacity: 0;
+  }
+  50% {
+    bottom: 80px;
+    width: 60px;
+    opacity: 1;
+  }
+  100% {
+    bottom: 80px;
+    width: 55ch;
+    opacity: 1;
+  }
 }
 
 @keyframes slideIn {
@@ -362,15 +477,33 @@ body.scroll {
   }
   100% {
     bottom: 80px;
-    width: 60ch;
+    width: 55ch;
     opacity: 1;
+  }
+}
+
+@-webkit-keyframes slideOut {
+  0% {
+    bottom: 80px;
+    width: 55ch;
+    opacity: 1;
+  }
+  50% {
+    bottom: 80px;
+    width: 60px;
+    opacity: 1;
+  }
+  100% {
+    bottom: -80px;
+    width: 60px;
+    opacity: 0;
   }
 }
 
 @keyframes slideOut {
   0% {
     bottom: 80px;
-    width: 60ch;
+    width: 55ch;
     opacity: 1;
   }
   50% {
@@ -389,7 +522,7 @@ iframe {
   opacity: 0 !important;
   display: none;
   border: none;
-  height: 100vh;
+  /* height: 100vh; */
 }
 iframe.visible {
   opacity: 1 !important;
@@ -427,11 +560,18 @@ img {
   width: 100%;
   height: 60px;
   background-color: #222;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   padding: 20px;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   font-family: sans-serif;
   font-size: 16px;
   z-index: 1000;
@@ -441,12 +581,17 @@ img {
 .countdown-bar {
   height: 6px;
   background-color: #00e0ff;
+  -webkit-transition: width 1s linear;
+  -o-transition: width 1s linear;
   transition: width 1s linear;
-  flex-shrink: 0;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
 }
 
 .bar-container {
-  flex-grow: 1;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
   margin-left: 15px;
   background: #333;
   height: 6px;
@@ -465,17 +610,25 @@ img {
   height: 225px;
   border: 2px solid #00e0ff;
   border-radius: 16px 0px 0px 16px;
-  object-fit: cover;
+  -o-object-fit: cover;
+     object-fit: cover;
   z-index: 99;
   background: black;
+  -webkit-transition: none;
+  -o-transition: none;
   transition: none;
 }
 
 .grid-table {
   
+  display: -ms-grid;
+  
   display: grid;
+  -ms-grid-columns: 1fr 3fr 1fr;
   grid-template-columns: 1fr 3fr 1fr;
   border: 1px solid #00e0ff;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
   width: fit-content;
   sup {
     color: white;
@@ -488,9 +641,15 @@ img {
   border-bottom: 1px solid #00e0ff;
   border-right: 1px solid #00e0ff;
   color: white;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 .header {
@@ -598,5 +757,12 @@ img {
 
 
 .slide video {
+  width: 100%;
+}
+
+
+.gap {
+  height: 80px;
+  position: relative;
   width: 100%;
 }
