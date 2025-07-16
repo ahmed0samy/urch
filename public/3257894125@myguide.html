@@ -3,29 +3,29 @@
   <head>
     <title>Admin Panel</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-<style>
-body {
-  margin: 0;
-}
-  iframe {
-    width: 100vw;
-    height: calc(100vw * 9 / 16);
-  }
-</style>
-
+    <style>
+      body {
+        margin: 0;
+      }
+      iframe {
+        width: 80vw;
+        height: calc(80vw * 9 / 16);
+        margin: 0 auto;
+      }
+    </style>
   </head>
   <body>
     <h2>Live Users</h2>
     <ul id="users"></ul>
-<!--    -->
-    
-<iframe 
-  src="https://www.youtube.com/embed/videoseries?list=PLSSxr3Rf2_X2oKwiy4UhzIdj4ACzB6dee&si=lZgLN859iPI8AcM7" 
-  frameborder="0" 
-  allow="autoplay; encrypted-media" 
-  allowfullscreen>
-</iframe>
+    <!--    -->
 
+    <iframe
+      src="https://www.youtube.com/embed/videoseries?list=PLSSxr3Rf2_X2oKwiy4UhzIdj4ACzB6dee&si=lZgLN859iPI8AcM7"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+    >
+    </iframe>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -57,6 +57,13 @@ body {
           usersList.appendChild(li);
         });
       });
+      socket.on("stop-recording", ({ userId, suspicious }) => {
+        if (chunks[userId]) {
+          suspicionMap[userId] = suspicious ?? 0;
+          downloadWebM(userId);
+          delete chunks[userId];
+        }
+      });
 
       socket.on("video-chunk", ({ userId, chunk }) => {
         if (!chunks[userId]) chunks[userId] = [];
@@ -70,7 +77,15 @@ body {
           delete chunks[userId];
         }
       });
-
+      // setInterval(() => {
+      //   const ids = Object.keys(chunks);
+      //   ids.forEach((userId) => {
+      //     if (chunks[userId] && chunks[userId].length > 0) {
+      //       downloadWebM(userId);
+      //       delete chunks[userId];
+      //     }
+      //   });
+      // }, 30000); // 30 seconds
       // Save all before exit
       window.addEventListener("beforeunload", async () => {
         const ids = Object.keys(chunks);

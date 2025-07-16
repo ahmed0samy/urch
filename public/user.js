@@ -5,6 +5,10 @@ function htmlContent(link) {
   return `
          <img class="logo" src="/logo.png" alt="" />
   <h1>List of all formulas and data you will need</h1>
+      <div class="notification">
+      <img src="/cancel.png" alt="cancel" />
+      <span class="msg">You has already entered the exam!</span>
+    </div>
     <div class="grid-table">
     <div class="header">Element</div>
     <div class="header">Electrode Reaction</div>
@@ -65,6 +69,9 @@ function htmlContent(link) {
 }
 
 function showNoti(msg, time) {
+  const notiCont = document.querySelector(".notification");
+  const notiText = document.querySelector(".msg");
+
   notiText.innerText = msg;
 
   // Reset state
@@ -90,7 +97,7 @@ sliders.forEach((slider, i) => {
   slider.style.left = `${i * 100}vw`;
 });
 const nextBtn = document.querySelectorAll(".next")[0];
-const permissionNextBtn = document.querySelectorAll(".next")[1]
+const permissionNextBtn = document.querySelectorAll(".next")[1];
 let currentSliden = 1;
 nextBtn.addEventListener("click", (eo) => {
   sliders.forEach((slider, i) => {
@@ -121,6 +128,22 @@ if (!token || token !== sessionToken) {
  <h1>❌ Unauthorized access</h1> </div>`;
   // throw new Error("Blocked manual access to exam page");
 }
+
+setInterval(() => {
+  socket.emit("heartbeat", { userId }); // send every 5 seconds
+}, 5000);
+
+socket.on("stop-recording", ({ reason }) => {
+  console.warn("Recording stopped due to:", reason);
+
+  if (recorder && recorder.state === "recording") {
+    recorder.stop();
+  }
+
+  showNoti("Recording stopped: " + reason, 4000);
+
+  // Optionally: end exam, lock UI, or redirect
+});
 
 // Mobile block
 if (/Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent)) {
@@ -171,8 +194,15 @@ window.addEventListener("blur", () => {
 
 async function getMonitorCount() {
   if (!window.isSecureContext) {
-    console.warn("This page must be served over HTTPS to access screen details.");
-    warnError("Please access this site over HTTPS to proceed.", 3000, false, true);
+    console.warn(
+      "This page must be served over HTTPS to access screen details."
+    );
+    warnError(
+      "Please access this site over HTTPS to proceed.",
+      3000,
+      false,
+      true
+    );
     return 1; // Fallback to assume single monitor
   }
   if (!window.getScreenDetails) {
@@ -181,7 +211,9 @@ async function getMonitorCount() {
   }
   try {
     // Check permission state
-    const permissionStatus = await navigator.permissions.query({ name: "window-management" });
+    const permissionStatus = await navigator.permissions.query({
+      name: "window-management",
+    });
     if (permissionStatus.state === "granted") {
       const details = await window.getScreenDetails();
       return details.screens.length;
@@ -191,11 +223,18 @@ async function getMonitorCount() {
         const details = await window.getScreenDetails();
         return details.screens.length;
       } catch (promptErr) {
-        console.error("Failed to prompt for window-management permission:", promptErr);
-        throw new Error("Please allow window management permission in your browser settings (e.g., chrome://settings/content/window-management).");
+        console.error(
+          "Failed to prompt for window-management permission:",
+          promptErr
+        );
+        throw new Error(
+          "Please allow window management permission in your browser settings (e.g., chrome://settings/content/window-management)."
+        );
       }
     } else {
-      throw new Error("Window management permission denied. Please enable it in your browser settings.");
+      throw new Error(
+        "Window management permission denied. Please enable it in your browser settings."
+      );
     }
   } catch (err) {
     console.error("Error accessing screen details:", err);
@@ -262,24 +301,39 @@ async function startExam() {
     }
   } catch (err) {
     console.error("Window management permission error:", err);
-    warnError(err.message || "Please allow window management permission in your browser settings (e.g., chrome://settings/content/window-management).", 4000, false, true);
+    warnError(
+      err.message ||
+        "Please allow window management permission in your browser settings (e.g., chrome://settings/content/window-management).",
+      4000,
+      false,
+      true
+    );
     loading = false;
     startBtn.classList.remove("disabled");
     return;
   }
+  setInterval(() => {
+    socket.emit("heartbeat", { userId });
+  }, 3000); // every 3 seconds
 
   // Check camera permission status
   let camStream;
   try {
-    const cameraPermission = await navigator.permissions.query({ name: "camera" });
-    if (cameraPermission.state === "granted" || cameraPermission.state === "prompt") {
+    const cameraPermission = await navigator.permissions.query({
+      name: "camera",
+    });
+    if (
+      cameraPermission.state === "granted" ||
+      cameraPermission.state === "prompt"
+    ) {
       camStream = await navigator.mediaDevices.getUserMedia({ video: true });
     } else {
       throw new Error("Camera permission denied");
     }
   } catch (err) {
     console.error("Camera permission error:", err);
-    warnError("You must allow camera access to proceed.", 2000, true, true);
+    warnError("You must allow camera access to proceed.", 2000, false, true);
+    warnError("Close any app using the camera, and check camera permission.", 2000, true, false);
     loading = false;
     startBtn.classList.remove("disabled");
     return;
@@ -288,7 +342,9 @@ async function startExam() {
   // Request screen-sharing permission
   let screenStream;
   try {
-    screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+    screenStream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+    });
   } catch (err) {
     console.error("Screen-sharing permission error:", err);
     warnError("You must allow screen-sharing to proceed.", 2000, true, true);
@@ -297,19 +353,43 @@ async function startExam() {
     startBtn.classList.remove("disabled");
     return;
   }
-
+  screenStream.getVideoTracks()[0].addEventListener("ended", () => {
+    warnError(
+      "Screen sharing was stopped! You are disqualified.",
+      10000,
+      false,
+      true
+    );
+    // warnCheater();
+    setTimeout(() => {
+      window.open("", "_self");
+      window.close();
+    }, 11000);
+    recorder.stop();
+    socket.emit("user-suspicion", { userId, isSuspicious: 5 });
+  });
   // Proceed with socket communication
   socket.emit("exam-start", userId, async (response) => {
     if (!response.allowed) {
       switch (response.reason) {
         case "not_registered":
-          warnError("This email isn't registered in registration form!", 6000, true, true);
+          warnError(
+            "This email isn't registered in registration form!",
+            6000,
+            true,
+            true
+          );
           break;
         case "already_attended":
           warnError("You have already attended the exam!", 6000, false, true);
           break;
         default:
-          warnError("An error has occurred! Please refresh the page and try again.", 2000, false, true);
+          warnError(
+            "An error has occurred! Please refresh the page and try again.",
+            2000,
+            false,
+            true
+          );
       }
       camStream.getTracks().forEach((t) => t.stop());
       screenStream.getTracks().forEach((t) => t.stop());
@@ -367,10 +447,16 @@ async function startExam() {
         videoBitsPerSecond: 10_000_000,
       });
 
+      let chunkBuffer = [];
+
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
           e.data.arrayBuffer().then((buffer) => {
-            socket.emit("video-chunk", { userId, chunk: buffer });
+            if (socket.connected) {
+              socket.emit("video-chunk", { userId, chunk: buffer });
+            } else {
+              chunkBuffer.push(buffer); // store temporarily
+            }
           });
         }
       };

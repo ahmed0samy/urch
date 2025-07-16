@@ -12,9 +12,11 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const connectedUsers = new Map();
 const userSuspicionMap = new Map();
+const userHeartbeats = new Map();
 
 // ✅ Correct Google Script Web App URL (already deployed with "Anyone" access)
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwiSVDoWwcWJuIBRDyNwgPIuY3lGBvg5FH14qPm1FEa2IPvAF3fXMtfeHwnRytAkyX5NA/exec";
+const GOOGLE_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbwiSVDoWwcWJuIBRDyNwgPIuY3lGBvg5FH14qPm1FEa2IPvAF3fXMtfeHwnRytAkyX5NA/exec";
 
 async function verifyWithGoogleSheet(email) {
   try {
@@ -44,6 +46,12 @@ io.on("connection", (socket) => {
 
   socket.on("video-chunk", ({ userId, chunk }) => {
     io.to("admin-room").emit("video-chunk", { userId, chunk });
+  });
+  socket.on("heartbeat", ({ userId }) => {
+    userHeartbeats.set(userId, {
+      timestamp: Date.now(),
+      socketId: socket.id,
+    });
   });
 
   socket.on("user-suspicion", ({ userId, isSuspicious }) => {
@@ -76,7 +84,9 @@ io.on("connection", (socket) => {
     const result = await verifyWithGoogleSheet(userId);
 
     if (!result || !result.success) {
-      console.log(`❌ Not allowed: ${userId} (${result?.reason || "unknown error"})`);
+      console.log(
+        `❌ Not allowed: ${userId} (${result?.reason || "unknown error"})`
+      );
       return callback({ allowed: false, reason: result?.reason });
     }
 
@@ -85,8 +95,27 @@ io.on("connection", (socket) => {
   });
 });
 
-app.get('/user', (req, res) => {
-  res.sendFile(__dirname + '/public' + '/user.html');
+setInterval(() => {
+  const now = Date.now();
+  const timeout = 10000; // 10 seconds without heartbeat
+  for (const [userId, { timestamp, socketId }] of userHeartbeats.entries()) {
+    if (now - timestamp > timeout) {
+      console.log(`🛑 No heartbeat from ${userId} — stopping their recording`);
+
+      // Tell user to stop recording (if they're still connected)
+      const targetSocket = io.sockets.sockets.get(socketId);
+      if (targetSocket) {
+        targetSocket.emit("stop-recording", { reason: "No heartbeat" });
+      }
+
+      // Cleanup
+      userHeartbeats.delete(userId);
+    }
+  }
+}, 5000); // Check every 5 seconds
+
+app.get("/user", (req, res) => {
+  res.sendFile(__dirname + "/public" + "/user.html");
 });
 
 const PORT = process.env.PORT || 3000;

@@ -321,6 +321,7 @@ body.scroll {
   transition: all 0.3s cubic-bezier(1, 0, 0, 1);
   opacity: 0;
   cursor: pointer;
+  z-index: 999;
 }
 
 .notification span {
@@ -361,7 +362,7 @@ body.scroll {
   }
   100% {
     bottom: 80px;
-    width: 40ch;
+    width: 60ch;
     opacity: 1;
   }
 }
@@ -369,7 +370,7 @@ body.scroll {
 @keyframes slideOut {
   0% {
     bottom: 80px;
-    width: 40ch;
+    width: 60ch;
     opacity: 1;
   }
   50% {
@@ -465,7 +466,7 @@ img {
   border: 2px solid #00e0ff;
   border-radius: 16px 0px 0px 16px;
   object-fit: cover;
-  z-index: 9999;
+  z-index: 99;
   background: black;
   transition: none;
 }
