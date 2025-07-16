@@ -91,7 +91,7 @@ io.on("connection", (socket) => {
     }
 
     console.log(`✅ User allowed: ${userId}`);
-    callback({ allowed: true, link: result.link });
+    callback({ allowed: true, link: result.link, height: result.height });
   });
 });
 

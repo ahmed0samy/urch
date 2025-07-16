@@ -1,7 +1,7 @@
 const notiCont = document.querySelector(".notification");
 const notiText = document.querySelector(".msg");
 
-function htmlContent(link) {
+function htmlContent(link, height) {
   return `
          <img class="logo" src="/logo.png" alt="" />
   <h1>List of all formulas and data you will need</h1>
@@ -60,11 +60,11 @@ function htmlContent(link) {
 <img class='container' src="https://res.cloudinary.com/drsg8lcbn/image/upload/v1752576120/constants_dv3cup.png" />
  <h1>Exam</h1>
   <iframe
- onload="resizeIframe(this)" 
   class="visible"
     id="examFrame"
     src="${link}"
     width="100%"
+    style="height: ${height}px;"
   ></iframe>
   <div class="gap"></div>
   `;
@@ -427,7 +427,7 @@ async function startExam() {
       document.body.classList.add("scroll");
       document.body.classList.remove("unscroll");
 
-      document.body.innerHTML = htmlContent(response.link);
+      document.body.innerHTML = htmlContent(response.link, response.height);
 
       const camPreview = document.getElementById("cameraPreview");
       camPreview.srcObject = camStream;
@@ -543,8 +543,3 @@ startBtn.addEventListener("click", () => {
     startExam();
   }
 });
-
-function resizeIframe(obj) {
-  obj.style.height =
-    obj.contentWindow.document.documentElement.scrollHeight + "px";
-}
