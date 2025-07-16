@@ -397,9 +397,12 @@ async function startExam() {
         case "already_attended":
           warnError("You have already attended the exam!", 6000, false, true);
           break;
+        case "closed":
+          warnError(response.message || "Exam is not available right now!", 6000, false, true);
+          break;
         default:
           warnError(
-            "An error has occurred! Please refresh the page and try again.",
+            "An error has occurred :" + response.reason +"! Please try again.",
             2000,
             false,
             true

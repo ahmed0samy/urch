@@ -87,7 +87,11 @@ io.on("connection", (socket) => {
       console.log(
         `❌ Not allowed: ${userId} (${result?.reason || "unknown error"})`
       );
-      return callback({ allowed: false, reason: result?.reason });
+      return callback({
+        allowed: false,
+        reason: result?.reason,
+        message: result?.message || "",
+      });
     }
 
     console.log(`✅ User allowed: ${userId}`);
@@ -114,8 +118,27 @@ setInterval(() => {
   }
 }, 5000); // Check every 5 seconds
 
-app.get("/user", (req, res) => {
-  res.sendFile(__dirname + "/public" + "/user.html");
+app.get("/user", async (req, res) => {
+  const result = await verifyWithGoogleSheet("");
+  if (result.reason == "closed") {
+    const html = `
+      <!DOCTYPE html>
+      
+      <html>
+      <head>
+          <link rel="stylesheet" href="closed.css" />
+
+      <title>URCh</title>
+      </head>
+      <body>
+        <h1>${result.message || "Exam not available right now"}</h1>
+      </body>
+      </html>
+    `;
+    res.send(html); // Send dynamic HTML with message
+  } else {
+    res.sendFile(__dirname + "/public" + "/user.html");
+  }
 });
 
 const PORT = process.env.PORT || 3000;

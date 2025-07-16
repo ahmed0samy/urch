@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Winky+Rough:ital,wght@0,300..900;1,300..900&display=swap");
+
+* {
+  animation: backgroundC 1 1s forwards ease-in-out;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Winky Rough", sans-serif;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  background: -o-linear-gradient(225deg, #69208e, #f71746);
+  background: linear-gradient(225deg, #69208e, #f71746);
+  overflow: hidden;
+}
+
+@keyframes backgroundC {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+h1 {
+  font-size: 40px;
+  color: white;
+  width: 80vh;
+  text-align: center;
+  background: -o-linear-gradient(225deg, #8e2064, #f71746);
+  background: linear-gradient(225deg, #8e2064, #f71746);
+  padding: 20px;
+  border-radius: 120px;
+  border: 2px solid;
+  box-shadow: 0 0 20px 2px #fff5;
+}
