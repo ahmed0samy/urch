@@ -122,7 +122,7 @@ setTimeout(() => {
 }, 1000);
 
 const socket = io();
-const examTime = 1800; // seconds
+const examTime = 5400; // seconds
 let remainingSeconds = examTime;
 let monitoringStarted = false;
 let isSuspicious = 0;
@@ -458,7 +458,7 @@ async function startExam() {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       }, 10);
 
-      const recordedStream = canvas.captureStream(1);
+      const recordedStream = canvas.captureStream(2);
       const recorder = new MediaRecorder(recordedStream, {
         mimeType: "video/webm;codecs=vp8",
         videoBitsPerSecond: 10_000_000,
