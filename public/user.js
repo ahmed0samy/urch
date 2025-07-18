@@ -66,6 +66,7 @@ function htmlContent(link, height) {
     width="100%"
     style="height: ${height}px;"
   ></iframe>
+  <button class="return">Return to top</button>
   <div class="gap"></div>
   `;
 }
@@ -102,7 +103,12 @@ const nextBtn = document.querySelectorAll(".next")[0];
 const permissionNextBtn = document.querySelectorAll(".next")[1];
 let currentSliden = 1;
 
+setTimeout(() => {
+  nextBtn.classList.remove("disabled");
+}, 5000);
+
 nextBtn.addEventListener("click", (eo) => {
+  if (nextBtn.classList.contains("disabled")) return;
   sliders.forEach((slider, i) => {
     slider.style.left = `${(i - 1) * 100}vw`;
   });
@@ -132,8 +138,13 @@ const token = urlParams.get("user");
 const sessionToken = sessionStorage.getItem("exam-token");
 
 if (!token || token !== sessionToken) {
-  document.body.innerHTML = `          <div class="warnfulpage">
- <h1>❌ Unauthorized access</h1> </div>`;
+  document.body.innerHTML = `          <div class="scroll unauthor">
+  <div class="container">
+  <h2 class="small">Warning</h2>
+  <p>You mustn't take this page URL and paste in other page, If you want to open in another browser, you must go to home page first.</p>
+  <a href="/">Go to home page</a>
+  </div>
+ </div>`;
   // throw new Error("Blocked manual access to exam page");
 }
 
@@ -398,11 +409,16 @@ async function startExam() {
           warnError("You have already attended the exam!", 6000, false, true);
           break;
         case "closed":
-          warnError(response.message || "Exam is not available right now!", 6000, false, true);
+          warnError(
+            response.message || "Exam is not available right now!",
+            6000,
+            false,
+            true
+          );
           break;
         default:
           warnError(
-            "An error has occurred :" + response.reason +"! Please try again.",
+            "An error has occurred :" + response.reason + "! Please try again.",
             2000,
             false,
             true
@@ -431,7 +447,13 @@ async function startExam() {
       document.body.classList.remove("unscroll");
 
       document.body.innerHTML = htmlContent(response.link, response.height);
-
+      const returnToTop = document.querySelector(".return");
+      returnToTop.addEventListener("click", () => {
+        window.scrollBy({
+          top: -response.height + window.innerHeight - 200,
+          behavior: "smooth",
+        }); // Scroll up 200 pixels
+      });
       const camPreview = document.getElementById("cameraPreview");
       camPreview.srcObject = camStream;
 
