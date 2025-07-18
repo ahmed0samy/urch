@@ -99,24 +99,24 @@ io.on("connection", (socket) => {
   });
 });
 
-setInterval(() => {
-  const now = Date.now();
-  const timeout = 10000; // 10 seconds without heartbeat
-  for (const [userId, { timestamp, socketId }] of userHeartbeats.entries()) {
-    if (now - timestamp > timeout) {
-      console.log(`🛑 No heartbeat from ${userId} — stopping their recording`);
+// setInterval(() => {
+//   const now = Date.now();
+//   const timeout = 10000; // 10 seconds without heartbeat
+//   for (const [userId, { timestamp, socketId }] of userHeartbeats.entries()) {
+//     if (now - timestamp > timeout) {
+//       console.log(`🛑 No heartbeat from ${userId} — stopping their recording`);
 
-      // Tell user to stop recording (if they're still connected)
-      const targetSocket = io.sockets.sockets.get(socketId);
-      if (targetSocket) {
-        targetSocket.emit("stop-recording", { reason: "No heartbeat" });
-      }
+//       // Tell user to stop recording (if they're still connected)
+//       const targetSocket = io.sockets.sockets.get(socketId);
+//       if (targetSocket) {
+//         targetSocket.emit("stop-recording", { reason: "No heartbeat" });
+//       }
 
-      // Cleanup
-      userHeartbeats.delete(userId);
-    }
-  }
-}, 5000); // Check every 5 seconds
+//       // Cleanup
+//       userHeartbeats.delete(userId);
+//     }
+//   }
+// }, 5000); // Check every 5 seconds
  
 app.get("/user", async (req, res) => {
   const result = await verifyWithGoogleSheet("");
