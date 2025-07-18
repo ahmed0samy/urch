@@ -117,7 +117,7 @@ setInterval(() => {
     }
   }
 }, 5000); // Check every 5 seconds
-
+ 
 app.get("/user", async (req, res) => {
   const result = await verifyWithGoogleSheet("");
   if (result.reason == "closed") {
