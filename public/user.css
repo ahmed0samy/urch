@@ -783,6 +783,12 @@ img {
   }
 }
 
+b {
+  color: #f7173c;
+  font-size: larger;
+  text-transform: uppercase;
+}
+
 a {
   background-color: #69208e;
   background-image: linear-gradient(45deg, #69208e, #f71746);
@@ -793,12 +799,6 @@ a {
   font-size: 24px;
 }
 
-b {
-  color: #f7173c;
-  font-size: larger;
-  text-transform: uppercase;
-}
-
 .credits {
   bottom: 5px;
   position: fixed;
@@ -806,8 +806,48 @@ b {
   width: 100%;
   text-align: center;
   a {
+    all: unset;
+    background-color: #69208e;
+    background-image: linear-gradient(45deg, #69208e, #f71746);
+    color: white;
+    border-radius: 120px;
+    text-decoration: none;
     font-size: 17px;
     padding: 5px 10px;
     margin-left: 5px;
+    background: linear-gradient(45deg, #69208e, #f71746);
+    background-size: 400% 400%;
+    animation: gradientMove 8s ease infinite;
+    display: inline-block;
+    border: 2px solid transparent;
+  }
+  a:hover {
+    animation-play-state: paused;
+    background: #f71746;
+    transition: all 0.3s ease-in-out;
+    border: 2px solid #69208e;
+  }
+}
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+    box-shadow: 2px 2px 20px #8e206450;
+    transform: scale(1.1) rotate(6deg);
+  }
+  25% {
+    transform: scale(1) rotate(-6deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(6deg);
+    background-position: 100% 50%;
+    box-shadow: 0px 0px 20px #8e206450;
+  }
+  75% {
+    transform: scale(1) rotate(-6deg);
+  }
+  100% {
+    transform: scale(1.1) rotate(6deg);
+    box-shadow: 2px 2px 20px #8e206450;
+    background-position: 0% 50%;
   }
 }

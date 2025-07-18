@@ -132,6 +132,12 @@ app.get("/user", async (req, res) => {
       </head>
       <body>
         <h1>${result.message || "Exam not available right now"}</h1>
+            <div class="credits">
+      <span
+        >This website is made by ❤️ with
+        <a target="_blank" href="https://linktr.ee/_Ahmed_Samy_">Ahmed Samy</a></span
+      >
+    </div>
       </body>
       </html>
     `;
