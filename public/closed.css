@@ -14,6 +14,7 @@ body {
   height: 100vh;
   background: -o-linear-gradient(225deg, #69208e, #f71746);
   background: linear-gradient(225deg, #69208e, #f71746);
+  background: #f8f4ff;
   overflow: hidden;
 }
 
@@ -26,7 +27,7 @@ body {
   }
 }
 h1 {
-  font-size: 40px;
+  font-size: 35px;
   color: white;
   width: 80vh;
   text-align: center;
