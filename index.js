@@ -16,7 +16,7 @@ const userHeartbeats = new Map();
 
 // ✅ Correct Google Script Web App URL (already deployed with "Anyone" access)
 const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwiSVDoWwcWJuIBRDyNwgPIuY3lGBvg5FH14qPm1FEa2IPvAF3fXMtfeHwnRytAkyX5NA/exec";
+  "https://script.google.com/macros/s/AKfycbyCNkEFAO3OGvmTDLQqb2Pdm43fOU2wZWIXcOMbUnRZjJ6bWcnvQcRV711HflsWlq2H/exec";
 
 async function verifyWithGoogleSheet(email) {
   try {
