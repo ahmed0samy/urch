@@ -128,7 +128,7 @@ setTimeout(() => {
 }, 1000);
 
 const socket = io();
-const examTime = 5400; // seconds
+const examTime = 3600; // seconds
 let remainingSeconds = examTime;
 let monitoringStarted = false;
 let isSuspicious = 0;
